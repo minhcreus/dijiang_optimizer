@@ -1,0 +1,872 @@
+{
+  "akekuri": {
+    "baseSkills": [
+      {
+        "name": "Coffee or Tea",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to slow Mood Drop of all operators in it by 10%",
+          "Assign to Manufacturing Cabin to slow Mood Drop of all operators in it by 14%"
+        ],
+        "type": "mood drain",
+        "values": [
+          0.1,
+          0.14
+        ]
+      },
+      {
+        "name": "Icebreaker",
+        "room": "RR",
+        "texts": [
+          "Assign to Reception Room to slow Mood Drop of all operators in it by 14%",
+          "Assign to Reception Room to slow Mood Drop of all operators in it by 18%"
+        ],
+        "type": "mood drain",
+        "values": [
+          0.14,
+          0.18
+        ]
+      }
+    ]
+  },
+  "alesh": {
+    "baseSkills": [
+      {
+        "name": "Casual Angling",
+        "room": "CN",
+        "texts": [
+          "Assign to Control Nexus to grant all operators' Mood Regen +8%",
+          "Assign to Control Nexus to grant all operators' Mood Regen +12%"
+        ],
+        "type": "mood regen",
+        "values": [
+          0.08,
+          0.12
+        ]
+      },
+      {
+        "name": "Anglers' Intel Network",
+        "room": "RR",
+        "texts": [
+          "Assign to Reception Room to grant operators a small Clue 1 Rate-UP: UWST (activates upon assignment; effects of the same type cannot stack)",
+          "Assign to Reception Room to grant operators Clue 1 Rate-UP: UWST (activates upon assignment; effects of the same type cannot stack)"
+        ],
+        "type": "clue rate up",
+        "values": [
+          1,
+          1
+        ]
+      }
+    ]
+  },
+  "antal": {
+    "baseSkills": [
+      {
+        "name": "Experimental Arts Unit",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to grant weapon EXP material production efficiency +10%",
+          "Assign to Manufacturing Cabin to grant weapon EXP material production efficiency +20%"
+        ],
+        "type": "weapon xp",
+        "values": [
+          0.1,
+          0.2
+        ]
+      },
+      {
+        "name": "Pun-isher Studies",
+        "room": "GC",
+        "texts": [
+          "Assign to Growth Chamber to slow Mood Drop of all operators in it by 14%",
+          "Assign to Growth Chamber to slow Mood Drop of all operators in it by 18%"
+        ],
+        "type": "mood drain",
+        "values": [
+          0.14,
+          0.18
+        ]
+      }
+    ]
+  },
+  "arcane": {
+    "baseSkills": [
+      {
+        "name": "Pluck the Mountain, Boil the Sea",
+        "room": "GC",
+        "texts": [
+          "Assign to Growth Chamber to grant rare mineral growth rate +20%",
+          "Assign to Growth Chamber to grant rare mineral growth rate +30%"
+        ],
+        "type": "mineral",
+        "values": [
+          0.2,
+          0.3
+        ]
+      },
+      {
+        "name": "Botanophile",
+        "room": "GC",
+        "texts": [
+          "Assign to Growth Chamber to grant vitrified plant growth rate +20%",
+          "Assign to Growth Chamber to grant vitrified plant growth rate +30%"
+        ],
+        "type": "plant",
+        "values": [
+          0.2,
+          0.3
+        ]
+      }
+    ]
+  },
+  "arclight": {
+    "baseSkills": [
+      {
+        "name": "Blade of the Wildlands",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to grant weapon EXP material production efficiency +10%",
+          "Assign to Manufacturing Cabin to grant weapon EXP material production efficiency +20%"
+        ],
+        "type": "weapon xp",
+        "values": [
+          0.1,
+          0.2
+        ]
+      },
+      {
+        "name": "Hanna Traditions",
+        "room": "RR",
+        "texts": [
+          "Assign to Reception Room to grant operators a small Clue 6 Rate-UP: Hannabit Circuit (activates upon assignment; effects of the same type cannot stack)",
+          "Assign to Reception Room to grant operators Clue 6 Rate-UP: Hannabit Circuit (activates upon assignment; effects of the same type cannot stack)"
+        ],
+        "type": "clue rate up",
+        "values": [
+          6,
+          6
+        ]
+      }
+    ]
+  },
+  "ardelia": {
+    "baseSkills": [
+      {
+        "name": "Tales of the Land",
+        "room": "RR",
+        "texts": [
+          "Assign to Reception Room to grant operator clue collecting efficiency +20%",
+          "Assign to Reception Room to grant operator clue collecting efficiency +30%"
+        ],
+        "type": "clue efficiency",
+        "values": [
+          0.2,
+          0.3
+        ]
+      },
+      {
+        "name": "Mr. Dolly's Game",
+        "room": "RR",
+        "texts": [
+          "Assign to Reception Room to slow Mood Drop of all operators in it by 14%",
+          "Assign to Reception Room to slow Mood Drop of all operators in it by 18%"
+        ],
+        "type": "mood drain",
+        "values": [
+          0.14,
+          0.18
+        ]
+      }
+    ]
+  },
+  "avywenna": {
+    "baseSkills": [
+      {
+        "name": "Residence Advisor",
+        "room": "CN",
+        "texts": [
+          "Assign to Control Nexus to grant all operators' Mood Regen +8%",
+          "Assign to Control Nexus to grant all operators' Mood Regen +12%"
+        ],
+        "type": "mood regen",
+        "values": [
+          0.08,
+          0.12
+        ]
+      },
+      {
+        "name": "Messenger's Secret",
+        "room": "RR",
+        "texts": [
+          "Assign to Reception Room to grant operators a small Clue 2 Rate-UP: TGCC (activates upon assignment; effects of the same type cannot stack)",
+          "Assign to Reception Room to grant operators Clue 2 Rate-UP: TGCC (activates upon assignment; effects of the same type cannot stack)"
+        ],
+        "type": "clue rate up",
+        "values": [
+          2,
+          2
+        ]
+      }
+    ]
+  },
+  "camille": {
+    "baseSkills": [
+      {
+        "name": "Hemo-Vitreography",
+        "room": "GC",
+        "texts": [
+          "Assign to Growth Chamber to grant vitrified plant growth rate +20%",
+          "Assign to Growth Chamber to grant vitrified plant growth rate +30%"
+        ],
+        "type": "plant",
+        "values": [
+          0.2,
+          0.3
+        ]
+      },
+      {
+        "name": "Agaš'mekanaz's Manual",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to grant operator EXP material production efficiency +20%",
+          "Assign to Manufacturing Cabin to grant operator EXP material production efficiency +30%"
+        ],
+        "type": "operator xp",
+        "values": [
+          0.2,
+          0.3
+        ]
+      }
+    ]
+  },
+  "catcher": {
+    "baseSkills": [
+      {
+        "name": "Silent Caretaker",
+        "room": "CN",
+        "texts": [
+          "Assign to Control Nexus to grant all operators' Mood Regen +8%",
+          "Assign to Control Nexus to grant all operators' Mood Regen +12%"
+        ],
+        "type": "mood regen",
+        "values": [
+          0.08,
+          0.12
+        ]
+      },
+      {
+        "name": "Grounded Approach",
+        "room": "GC",
+        "texts": [
+          "Assign to Growth Chamber to slow Mood Drop of all operators in it by 14%",
+          "Assign to Growth Chamber to slow Mood Drop of all operators in it by 18%"
+        ],
+        "type": "mood drain",
+        "values": [
+          0.14,
+          0.18
+        ]
+      }
+    ]
+  },
+  "chen-qianyu": {
+    "baseSkills": [
+      {
+        "name": "Blade Critique",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to grant weapon EXP material production efficiency +10%",
+          "Assign to Manufacturing Cabin to grant weapon EXP material production efficiency +20%"
+        ],
+        "type": "weapon xp",
+        "values": [
+          0.1,
+          0.2
+        ]
+      },
+      {
+        "name": "Jadeworking",
+        "room": "GC",
+        "texts": [
+          "Assign to Growth Chamber to grant rare mineral growth rate +20%",
+          "Assign to Growth Chamber to grant rare mineral growth rate +30%"
+        ],
+        "type": "mineral",
+        "values": [
+          0.2,
+          0.3
+        ]
+      }
+    ]
+  },
+  "da-pan": {
+    "baseSkills": [
+      {
+        "name": "Chef of Forage and Game",
+        "room": "GC",
+        "texts": [
+          "Assign to Growth Chamber to grant fungal matter growth rate +10%",
+          "Assign to Growth Chamber to grant fungal matter growth rate +20%"
+        ],
+        "type": "fungus",
+        "values": [
+          0.1,
+          0.2
+        ]
+      },
+      {
+        "name": "Worldly Wisdom",
+        "room": "CN",
+        "texts": [
+          "Assign to Control Nexus to grant all operators' Mood Regen +12%",
+          "Assign to Control Nexus to grant all operators' Mood Regen +16%"
+        ],
+        "type": "mood regen",
+        "values": [
+          0.12,
+          0.16
+        ]
+      }
+    ]
+  },
+  "ember": {
+    "baseSkills": [
+      {
+        "name": "Special Northern Training",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to grant operator EXP material production efficiency +20%",
+          "Assign to Manufacturing Cabin to grant operator EXP material production efficiency +30%"
+        ],
+        "type": "operator xp",
+        "values": [
+          0.2,
+          0.3
+        ]
+      },
+      {
+        "name": "Keepers of the Banner",
+        "room": "RR",
+        "texts": [
+          "Assign to Reception Room to grant operators a small Clue 4 Rate-UP: Order of Steel Oath (activates upon assignment; effects of the same type cannot stack)",
+          "Assign to Reception Room to grant operators Clue 4 Rate-UP: Order of Steel Oath (activates upon assignment; effects of the same type cannot stack)"
+        ],
+        "type": "clue rate up",
+        "values": [
+          4,
+          4
+        ]
+      }
+    ]
+  },
+  "estella": {
+    "baseSkills": [
+      {
+        "name": "Fragmented Rest",
+        "room": "CN",
+        "texts": [
+          "Assign to Control Nexus to grant all operators' Mood Regen +8%",
+          "Assign to Control Nexus to grant all operators' Mood Regen +12%"
+        ],
+        "type": "mood regen",
+        "values": [
+          0.08,
+          0.12
+        ]
+      },
+      {
+        "name": "Frequency Monitoring",
+        "room": "RR",
+        "texts": [
+          "Assign to Reception Room to grant operator clue collecting efficiency +20%",
+          "Assign to Reception Room to grant operator clue collecting efficiency +30%"
+        ],
+        "type": "clue efficiency",
+        "values": [
+          0.2,
+          0.3
+        ]
+      }
+    ]
+  },
+  "fluorite": {
+    "baseSkills": [
+      {
+        "name": "Wildlands Trekker",
+        "room": "GC",
+        "texts": [
+          "Assign to Growth Chamber to grant rare mineral growth rate +10%",
+          "Assign to Growth Chamber to grant rare mineral growth rate +20%"
+        ],
+        "type": "mineral",
+        "values": [
+          0.1,
+          0.2
+        ]
+      },
+      {
+        "name": "Reader of Emotions",
+        "room": "CN",
+        "texts": [
+          "Assign to Control Nexus to grant all operators' Mood Regen +12%",
+          "Assign to Control Nexus to grant all operators' Mood Regen +16%"
+        ],
+        "type": "mood regen",
+        "values": [
+          0.12,
+          0.16
+        ]
+      }
+    ]
+  },
+  "gilberta": {
+    "baseSkills": [
+      {
+        "name": "Messengerial Processing",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to slow Mood Drop of all operators in it by 14%",
+          "Assign to Manufacturing Cabin to slow Mood Drop of all operators in it by 18%"
+        ],
+        "type": "mood drain",
+        "values": [
+          0.14,
+          0.18
+        ]
+      },
+      {
+        "name": "Messengerial Arms Mastery",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to grant weapon EXP material production efficiency +20%",
+          "Assign to Manufacturing Cabin to grant weapon EXP material production efficiency +30%"
+        ],
+        "type": "weapon xp",
+        "values": [
+          0.2,
+          0.3
+        ]
+      }
+    ]
+  },
+  "laevatain": {
+    "baseSkills": [
+      {
+        "name": "Memory Crucible",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to grant operator EXP material production efficiency +20%",
+          "Assign to Manufacturing Cabin to grant operator EXP material production efficiency +30%"
+        ],
+        "type": "operator xp",
+        "values": [
+          0.2,
+          0.3
+        ]
+      },
+      {
+        "name": "Undying Flames",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to slow Mood Drop of all operators in it by 14%",
+          "Assign to Manufacturing Cabin to slow Mood Drop of all operators in it by 18%"
+        ],
+        "type": "mood drain",
+        "values": [
+          0.14,
+          0.18
+        ]
+      }
+    ]
+  },
+  "last-rite": {
+    "baseSkills": [
+      {
+        "name": "Cemetery Gardening",
+        "room": "GC",
+        "texts": [
+          "Assign to Growth Chamber to grant vitrified plant growth rate +20%",
+          "Assign to Growth Chamber to grant vitrified plant growth rate +30%"
+        ],
+        "type": "plant",
+        "values": [
+          0.2,
+          0.3
+        ]
+      },
+      {
+        "name": "Fame of the Royal Courts",
+        "room": "RR",
+        "texts": [
+          "Assign to Reception Room to grant operators a small Clue 7 Rate-UP: Seš'qa (activates upon assignment; effects of the same type cannot stack)",
+          "Assign to Reception Room to grant operators Clue 7 Rate-UP: Seš'qa (activates upon assignment; effects of the same type cannot stack)"
+        ],
+        "type": "clue rate up",
+        "values": [
+          7,
+          7
+        ]
+      }
+    ]
+  },
+  "lifeng": {
+    "baseSkills": [
+      {
+        "name": "Youthful Ambition",
+        "room": "CN",
+        "texts": [
+          "Assign to Control Nexus to grant all operators' Mood Regen +12%",
+          "Assign to Control Nexus to grant all operators' Mood Regen +16%"
+        ],
+        "type": "mood regen",
+        "values": [
+          0.12,
+          0.16
+        ]
+      },
+      {
+        "name": "Laddie Reliable",
+        "room": "RR",
+        "texts": [
+          "Assign to Reception Room to grant operators a small Clue 3 Rate-UP: HAS (activates upon assignment; effects of the same type cannot stack)",
+          "Assign to Reception Room to grant operators Clue 3 Rate-UP: HAS (activates upon assignment; effects of the same type cannot stack)"
+        ],
+        "type": "clue rate up",
+        "values": [
+          3,
+          3
+        ]
+      }
+    ]
+  },
+  "liino": {
+    "baseSkills": [
+      {
+        "name": "Idol Passion",
+        "room": "RR",
+        "texts": [
+          "Assign to Reception Room to slow Mood Drop of all operators in it by 14%",
+          "Assign to Reception Room to slow Mood Drop of all operators in it by 18%"
+        ],
+        "type": "mood drain",
+        "values": [
+          0.14,
+          0.18
+        ]
+      },
+      {
+        "name": "Stage Vibe That Lingers",
+        "room": "CN",
+        "texts": [
+          "Assign to Control Nexus to grant all operators' Mood Regen +12%",
+          "Assign to Control Nexus to grant all operators' Mood Regen +16%"
+        ],
+        "type": "mood regen",
+        "values": [
+          0.12,
+          0.16
+        ]
+      }
+    ]
+  },
+  "mi-fu": {
+    "baseSkills": [
+      {
+        "name": "Secret Informants",
+        "room": "RR",
+        "texts": [
+          "Assign to Reception Room to grant operators a small Clue 3 Rate-UP: HAS (activates upon assignment; effects of the same type cannot stack)",
+          "Assign to Reception Room to grant operators Clue 3 Rate-UP: HAS (activates upon assignment; effects of the same type cannot stack)"
+        ],
+        "type": "clue rate up",
+        "values": [
+          3,
+          3
+        ]
+      },
+      {
+        "name": "Esoteric Tisane",
+        "room": "GC",
+        "texts": [
+          "Assign to Growth Chamber to grant fungal matter growth rate +20%",
+          "Assign to Growth Chamber to grant fungal matter growth rate +30%"
+        ],
+        "type": "fungus",
+        "values": [
+          0.2,
+          0.3
+        ]
+      }
+    ]
+  },
+  "perlica": {
+    "baseSkills": [
+      {
+        "name": "Supervisor",
+        "room": "CN",
+        "texts": [
+          "Assign to Control Nexus to grant all operators' Mood Regen +8%",
+          "Assign to Control Nexus to grant all operators' Mood Regen +12%"
+        ],
+        "type": "mood regen",
+        "values": [
+          0.08,
+          0.12
+        ]
+      },
+      {
+        "name": "Protocol Redistribution",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to grant weapon EXP material production efficiency +20%",
+          "Assign to Manufacturing Cabin to grant weapon EXP material production efficiency +30%"
+        ],
+        "type": "weapon xp",
+        "values": [
+          0.2,
+          0.3
+        ]
+      }
+    ]
+  },
+  "pogranichnik": {
+    "baseSkills": [
+      {
+        "name": "Hone the Weapons",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to grant weapon EXP material production efficiency +20%",
+          "Assign to Manufacturing Cabin to grant weapon EXP material production efficiency +30%"
+        ],
+        "type": "weapon xp",
+        "values": [
+          0.2,
+          0.3
+        ]
+      },
+      {
+        "name": "Morale Boost",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to slow Mood Drop of all operators in it by 14%",
+          "Assign to Manufacturing Cabin to slow Mood Drop of all operators in it by 18%"
+        ],
+        "type": "mood drain",
+        "values": [
+          0.14,
+          0.18
+        ]
+      }
+    ]
+  },
+  "rossi": {
+    "baseSkills": [
+      {
+        "name": "Clan Etiquette",
+        "room": "RR",
+        "texts": [
+          "Assign to Reception Room to slow Mood Drop of all operators in it by 14%",
+          "Assign to Reception Room to slow Mood Drop of all operators in it by 18%"
+        ],
+        "type": "mood drain",
+        "values": [
+          0.14,
+          0.18
+        ]
+      },
+      {
+        "name": "Scent of the Hunt",
+        "room": "RR",
+        "texts": [
+          "Assign to Reception Room to grant operator clue collecting efficiency +20%",
+          "Assign to Reception Room to grant operator clue collecting efficiency +30%"
+        ],
+        "type": "clue efficiency",
+        "values": [
+          0.2,
+          0.3
+        ]
+      }
+    ]
+  },
+  "snowshine": {
+    "baseSkills": [
+      {
+        "name": "Rescuer's Perseverance",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to slow Mood Drop of all operators in it by 10%",
+          "Assign to Manufacturing Cabin to slow Mood Drop of all operators in it by 14%"
+        ],
+        "type": "mood drain",
+        "values": [
+          0.1,
+          0.14
+        ]
+      },
+      {
+        "name": "Happy-Go-Lucky",
+        "room": "CN",
+        "texts": [
+          "Assign to Control Nexus to grant all operators' Mood Regen +12%",
+          "Assign to Control Nexus to grant all operators' Mood Regen +16%"
+        ],
+        "type": "mood regen",
+        "values": [
+          0.12,
+          0.16
+        ]
+      }
+    ]
+  },
+  "tangtang": {
+    "baseSkills": [
+      {
+        "name": "Supreme Chief",
+        "room": "GC",
+        "texts": [
+          "Assign to Growth Chamber to slow Mood Drop of all operators in it by 14%",
+          "Assign to Growth Chamber to slow Mood Drop of all operators in it by 18%"
+        ],
+        "type": "mood drain",
+        "values": [
+          0.14,
+          0.18
+        ]
+      },
+      {
+        "name": "River's Daughter",
+        "room": "GC",
+        "texts": [
+          "Assign to Growth Chamber to grant vitrified plant growth rate +20%",
+          "Assign to Growth Chamber to grant vitrified plant growth rate +30%"
+        ],
+        "type": "plant",
+        "values": [
+          0.2,
+          0.3
+        ]
+      }
+    ]
+  },
+  "wulfgard": {
+    "baseSkills": [
+      {
+        "name": "Pack Techniques",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to grant operator EXP material production efficiency +10%",
+          "Assign to Manufacturing Cabin to grant operator EXP material production efficiency +20%"
+        ],
+        "type": "operator xp",
+        "values": [
+          0.1,
+          0.2
+        ]
+      },
+      {
+        "name": "Knack for the Wildlands",
+        "room": "GC",
+        "texts": [
+          "Assign to Growth Chamber to grant rare mineral growth rate +20%",
+          "Assign to Growth Chamber to grant rare mineral growth rate +30%"
+        ],
+        "type": "mineral",
+        "values": [
+          0.2,
+          0.3
+        ]
+      }
+    ]
+  },
+  "xaihi": {
+    "baseSkills": [
+      {
+        "name": "Standardized Scripting",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to grant operator EXP material production efficiency +10%",
+          "Assign to Manufacturing Cabin to grant operator EXP material production efficiency +20%"
+        ],
+        "type": "operator xp",
+        "values": [
+          0.1,
+          0.2
+        ]
+      },
+      {
+        "name": "Murmuring Session",
+        "room": "RR",
+        "texts": [
+          "Assign to Reception Room to grant operators a small Clue 5 Rate-UP: Cabal of Tranquility (activates upon assignment; effects of the same type cannot stack)",
+          "Assign to Reception Room to grant operators Clue 5 Rate-UP: Cabal of Tranquility (activates upon assignment; effects of the same type cannot stack)"
+        ],
+        "type": "clue rate up",
+        "values": [
+          5,
+          5
+        ]
+      }
+    ]
+  },
+  "yvonne": {
+    "baseSkills": [
+      {
+        "name": "Fungal Pigment Extraction",
+        "room": "GC",
+        "texts": [
+          "Assign to Growth Chamber to grant fungal matter growth rate +20%",
+          "Assign to Growth Chamber to grant fungal matter growth rate +30%"
+        ],
+        "type": "fungus",
+        "values": [
+          0.2,
+          0.3
+        ]
+      },
+      {
+        "name": "Fashionista",
+        "room": "GC",
+        "texts": [
+          "Assign to Growth Chamber to slow Mood Drop of all operators in it by 14%",
+          "Assign to Growth Chamber to slow Mood Drop of all operators in it by 18%"
+        ],
+        "type": "mood drain",
+        "values": [
+          0.14,
+          0.18
+        ]
+      }
+    ]
+  },
+  "zhuang-fangyi": {
+    "baseSkills": [
+      {
+        "name": "Viceroy Experience",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to slow Mood Drop of all operators in it by 14%",
+          "Assign to Manufacturing Cabin to slow Mood Drop of all operators in it by 18%"
+        ],
+        "type": "mood drain",
+        "values": [
+          0.14,
+          0.18
+        ]
+      },
+      {
+        "name": "Tianshi Chi Meditation",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to grant operator EXP material production efficiency +20%",
+          "Assign to Manufacturing Cabin to grant operator EXP material production efficiency +30%"
+        ],
+        "type": "operator xp",
+        "values": [
+          0.2,
+          0.3
+        ]
+      }
+    ]
+  }
+}
