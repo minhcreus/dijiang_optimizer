@@ -22,6 +22,12 @@ export interface Skill {
 export interface OperatorData {
   name: string;
   baseSkills: Skill[];
+  /** stars (4-6) */
+  rarity?: number;
+  /** art for operators the asset repo does not have yet (from warfarin.wiki), and a second image
+   *  scripts/fetch-art.mjs tries; the site shows its copy in assets/operators first */
+  art?: string;
+  artFallback?: string;
 }
 
 export type OperatorsData = Record<string, OperatorData>;
@@ -59,6 +65,10 @@ export interface PlannerSettings {
   cnModel?: CnModel;
   /** "optimize" (default): Optimize also picks each room's Shift A/B hours; "keep": it only picks operators */
   shiftHours?: ShiftHours;
+  /** room priority switched on or off; missing in older profiles, which use the `prio` preset */
+  prioOn?: boolean;
+  /** production room id -> priority level 1-5 (how many times the room counts when Optimize compares plans) */
+  roomPrio?: Record<string, number>;
 }
 
 export interface DijiangPlanner {

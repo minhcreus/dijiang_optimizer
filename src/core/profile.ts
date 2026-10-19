@@ -1,6 +1,6 @@
 // Profile data: defaults, migration, skill levels and shift slots.
 // Every function that returns a profile works on a copy.
-import { LATEST_VERSION, ROOM_IDS, shiftSlot } from "./constants.ts";
+import { LATEST_VERSION, PRIORITY_OPTIONS, ROOM_IDS, roomType, shiftSlot } from "./constants.ts";
 import { at, field, isDict, lookup, pyMax, pyMin, pyUpdate, setAt, subscript, truthy } from "./py.ts";
 import type { DijiangPlanner, Profile, RoomSettings, ShiftSettings } from "./types.ts";
 
@@ -126,4 +126,34 @@ export function usedOperatorIds(profile: Profile): Set<string> {
     for (const op of slots) if (truthy(op)) ids.add(subscript<string>(op, "id"));
   }
   return ids;
+}
+
+/** Rooms with a priority (the Control Nexus only helps the others) and the highest level. */
+export const PRIO_ROOMS: readonly string[] = ROOM_IDS.filter((r) => r !== "CN");
+export const PRIO_MAX = 5;
+
+const prioLevel = (v: unknown): number => (typeof v === "number" && Number.isFinite(v) ? Math.min(PRIO_MAX, Math.max(1, Math.round(v))) : 1);
+
+/** Room priority switched on. Older profiles without the switch count as on when their preset is not Equal. */
+export function priorityOn(profile: Profile): boolean {
+  const s = profile.dijiangPlanner.settings;
+  if (typeof s.prioOn === "boolean") return s.prioOn;
+  return lookup(PRIORITY_OPTIONS, field(s, "prio", "Equal"), PRIORITY_OPTIONS.Equal) !== PRIORITY_OPTIONS.Equal;
+}
+
+/** Each production room's priority level, kept while priority is off; older profiles take it from their preset. */
+export function priorityLevels(profile: Profile): Record<string, number> {
+  const s = profile.dijiangPlanner.settings;
+  if (isDict(s.roomPrio)) {
+    const lv = s.roomPrio as Record<string, unknown>;
+    return Object.fromEntries(PRIO_ROOMS.map((r) => [r, prioLevel(lv[r])]));
+  }
+  const preset = lookup(PRIORITY_OPTIONS, field(s, "prio", "Equal"), PRIORITY_OPTIONS.Equal);
+  return Object.fromEntries(PRIO_ROOMS.map((r) => [r, preset[roomType(r)] ?? 1]));
+}
+
+/** How many times each production room counts when Optimize compares plans (1 each while priority is off). */
+export function roomWeights(profile: Profile): Record<string, number> {
+  if (!priorityOn(profile)) return Object.fromEntries(PRIO_ROOMS.map((r) => [r, 1]));
+  return priorityLevels(profile);
 }

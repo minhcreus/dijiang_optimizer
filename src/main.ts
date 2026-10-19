@@ -14,7 +14,7 @@ import { hideTip, onMouseOver } from "./ui/tooltip.ts";
 const store = createStore({ defaults: defaultProfile, normalize: normalizeProfile });
 initState(store, ROOM_IDS);
 
-/** Missing art: the original from the asset repo for a shipped thumbnail, else hidden (no broken-image icon). */
+/** Missing art: the remote original for a shipped copy, else hidden (no broken-image icon). */
 function onImageError(evt: Event): void {
   const el = evt.target;
   if (!(el instanceof HTMLImageElement)) return;

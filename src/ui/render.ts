@@ -205,10 +205,12 @@ export const renderRoster = partial((): void => {
 export const renderRosterFilters = partial((): void => {
   if (!byId("oc-grid")) return render();
   hideTip();
+  const cur: Record<string, string> = { room: S.filterRoom, status: S.filterStatus, sort: S.sortBy };
   for (const chip of document.querySelectorAll<HTMLElement>(".chip-btn[data-act=filter]")) {
-    const cur = chip.dataset.group === "room" ? S.filterRoom : S.filterStatus;
-    chip.classList.toggle("on", chip.dataset.val === cur);
+    chip.classList.toggle("on", chip.dataset.val === cur[chip.dataset.group ?? ""]);
   }
+  const meta = document.querySelector("#view .roster-meta");
+  if (meta) morph(meta, fromHtml(rosterMeta()));
   patchRosterGrid();
 });
 

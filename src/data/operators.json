@@ -1,92 +1,140 @@
 {
   "akekuri": {
-    "name": "Akekuri"
+    "name": "Akekuri",
+    "rarity": 4
   },
   "alesh": {
-    "name": "Alesh"
+    "name": "Alesh",
+    "rarity": 5
   },
   "antal": {
-    "name": "Antal"
+    "name": "Antal",
+    "rarity": 4
   },
   "arcane": {
-    "name": "Arcane"
+    "name": "Arcane",
+    "rarity": 6
   },
   "arclight": {
-    "name": "Arclight"
+    "name": "Arclight",
+    "rarity": 5
   },
   "ardelia": {
-    "name": "Ardelia"
+    "name": "Ardelia",
+    "rarity": 6
   },
   "avywenna": {
-    "name": "Avywenna"
+    "name": "Avywenna",
+    "rarity": 5
   },
   "camille": {
-    "name": "Camille"
+    "name": "Camille",
+    "rarity": 6
   },
   "catcher": {
-    "name": "Catcher"
+    "name": "Catcher",
+    "rarity": 4
   },
   "chen-qianyu": {
-    "name": "Chen Qianyu"
+    "name": "Chen Qianyu",
+    "rarity": 5
   },
   "da-pan": {
-    "name": "Da Pan"
+    "name": "Da Pan",
+    "rarity": 5
   },
   "ember": {
-    "name": "Ember"
+    "name": "Ember",
+    "rarity": 6
   },
   "endministrator": {
-    "name": "Endministrator"
+    "name": "Endministrator",
+    "rarity": 6
   },
   "estella": {
-    "name": "Estella"
+    "name": "Estella",
+    "rarity": 4
   },
   "fluorite": {
-    "name": "Fluorite"
+    "name": "Fluorite",
+    "rarity": 4
   },
   "gilberta": {
-    "name": "Gilberta"
+    "name": "Gilberta",
+    "rarity": 6
   },
   "laevatain": {
-    "name": "Laevatain"
+    "name": "Laevatain",
+    "rarity": 6
   },
   "last-rite": {
-    "name": "Last Rite"
+    "name": "Last Rite",
+    "rarity": 6
   },
   "lifeng": {
-    "name": "Lifeng"
+    "name": "Lifeng",
+    "rarity": 6
   },
   "liino": {
-    "name": "Liino"
+    "name": "Liino",
+    "rarity": 6
   },
   "mi-fu": {
-    "name": "Mi Fu"
+    "name": "Mi Fu",
+    "rarity": 6
   },
   "perlica": {
-    "name": "Perlica"
+    "name": "Perlica",
+    "rarity": 5
   },
   "pogranichnik": {
-    "name": "Pogranichnik"
+    "name": "Pogranichnik",
+    "rarity": 6
+  },
+  "purrchena": {
+    "name": "Purrchena",
+    "art": "https://static.warfarin.wiki/v4/charremoteicon/icon_chr_0038_purrche.webp",
+    "artFallback": "https://static.warfarin.wiki/v4/characterportrait/chr_0038_purrche.webp",
+    "rarity": 5
   },
   "rossi": {
-    "name": "Rossi"
+    "name": "Rossi",
+    "rarity": 6
+  },
+  "si": {
+    "name": "Si",
+    "art": "https://static.warfarin.wiki/v4/charremoteicon/icon_chr_0036_jsspsi.webp",
+    "artFallback": "https://static.warfarin.wiki/v4/characterportrait/chr_0036_jsspsi.webp",
+    "rarity": 6
   },
   "snowshine": {
-    "name": "Snowshine"
+    "name": "Snowshine",
+    "rarity": 5
   },
   "tangtang": {
-    "name": "Tangtang"
+    "name": "Tangtang",
+    "rarity": 6
+  },
+  "typhoeus": {
+    "name": "Typhoeus",
+    "art": "https://static.warfarin.wiki/v4/charremoteicon/icon_chr_0034_typhoea.webp",
+    "artFallback": "https://static.warfarin.wiki/v4/characterportrait/chr_0034_typhoea.webp",
+    "rarity": 6
   },
   "wulfgard": {
-    "name": "Wulfgard"
+    "name": "Wulfgard",
+    "rarity": 5
   },
   "xaihi": {
-    "name": "Xaihi"
+    "name": "Xaihi",
+    "rarity": 5
   },
   "yvonne": {
-    "name": "Yvonne"
+    "name": "Yvonne",
+    "rarity": 6
   },
   "zhuang-fangyi": {
-    "name": "Zhuang Fangyi"
+    "name": "Zhuang Fangyi",
+    "rarity": 6
   }
 }

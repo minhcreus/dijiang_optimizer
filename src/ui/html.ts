@@ -59,6 +59,20 @@ export function img(kind: string, name: string, cls: string, alt = ""): string {
   return `<img class="${cls}" src="${esc(src)}"${fallback}${hidden} alt="${esc(alt)}" width="${w}" height="${h}" loading="lazy" decoding="async" crossorigin="anonymous">`;
 }
 
+/**
+ * Art that may fall back to another host (operators the asset repo does not have yet). Not in
+ * CORS mode, since that host may not send CORS headers, and without a referrer, which hotlink
+ * checks allow; the service worker leaves the other host to the browser cache. Fails over to
+ * `fallback` once, like img().
+ */
+export function remoteImg(src: string, fallback: string | undefined, cls: string, alt = ""): string {
+  const [w, h] = IMG_SIZE[cls] ?? [24, 24];
+  const cur = fallback && failedArt.has(src) ? fallback : src;
+  const fb = fallback && cur === src ? ` data-fallback="${esc(fallback)}"` : "";
+  const hidden = failedArt.has(cur) ? ' style="visibility:hidden"' : "";
+  return `<img class="${cls}" src="${esc(cur)}"${fb}${hidden} alt="${esc(alt)}" width="${w}" height="${h}" loading="lazy" decoding="async" referrerpolicy="no-referrer">`;
+}
+
 /** Python-style string comparison (code units; data ids and names are ASCII). */
 export function cmpStr(a: string, b: string): number {
   return a < b ? -1 : a > b ? 1 : 0;

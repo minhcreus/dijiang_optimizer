@@ -16,10 +16,10 @@
 // A room's value only depends on each team's size, skill bonuses and work time, so the
 // minutes a shift works are cached per ship, work time and window: most tries cost a few
 // multiplications. Every number comes from the same functions as the results (calc.ts).
-import { BREAK_TIME, DAY_MIN, OPERATOR_BONUS, PRIORITY_OPTIONS, ROOM_DATA, ROOM_IDS, WORK_TIME, roomType, shiftSlot } from "./constants.ts";
+import { BREAK_TIME, DAY_MIN, OPERATOR_BONUS, ROOM_DATA, ROOM_IDS, WORK_TIME, roomType, shiftSlot } from "./constants.ts";
 import { roomEfficiency, shiftWorked, shipState, skillValue, teamBreak } from "./calc.ts";
 import type { ShipState } from "./calc.ts";
-import { getShiftSettings, syncSlots } from "./profile.ts";
+import { getShiftSettings, roomWeights, syncSlots } from "./profile.ts";
 import { field, lookup, truthy } from "./py.ts";
 import { shiftWindows, windowLength } from "./shifts.ts";
 import type { Assigned, OperatorsData, Profile, RoomSettings, ShiftSettings, Slots, Window } from "./types.ts";
@@ -186,7 +186,7 @@ function prepare(ops: OperatorsData, profile: Profile, available: readonly strin
       }
     });
   });
-  const prio = lookup(PRIORITY_OPTIONS, field(dp.settings, "prio", "Equal"), PRIORITY_OPTIONS.Equal);
+  const prio = roomWeights(profile);
   const runs = PROD.map((rid): Run => {
     const sh = getShiftSettings(profile, rid);
     if (!truthy(sh.enabled)) return NO_RUN;
@@ -194,7 +194,7 @@ function prepare(ops: OperatorsData, profile: Profile, available: readonly strin
     return { kind: truthy(sh.autoRotate) ? "auto" : "hand", a: w.A, b: w.B, active: sh.active === "B" ? 1 : 0 };
   });
   return {
-    ops, profile, keep, ids, beta, drain, regen, cnDrain, weight: PROD.map((r) => prio[roomType(r)] ?? 1), pool, fixed, fixedEntry,
+    ops, profile, keep, ids, beta, drain, regen, cnDrain, weight: PROD.map((r) => prio[r] ?? 1), pool, fixed, fixedEntry,
     runs, cnShift: truthy(getShiftSettings(profile, "CN").enabled),
   };
 }
@@ -366,6 +366,25 @@ class Planner {
     else if (run.kind === "hand") v = this.breaksValue(se, plan, r, run.active) + RESERVE * this.breaksValue(se, plan, r, 1 - run.active);
     else v = this.breaksValue(se, plan, r, 0);
     return this.P.weight[r] * v;
+  }
+
+  /** Auto-rotating shifts of room r with operators that run out of Mood on duty (the results warn about these). */
+  halts(se: ShipEval, plan: Plan, r: number): number {
+    const run = this.run(plan, r);
+    if (run.kind !== "auto") return 0;
+    let n = 0;
+    for (const [s, win] of [[0, run.a], [1, run.b]] as const) {
+      let d = 0;
+      let any = false;
+      for (let i = 0; i < 3; i++) {
+        const o = plan.pos[at3(r, s) + i];
+        if (o < 0) continue;
+        any = true;
+        d += this.P.drain[o * NR + r];
+      }
+      if (any && se.hours(workOf(d), win) * DAY_MIN < windowLength(win) - 1e-6) n++;
+    }
+    return n;
   }
 
   private shiftValue(se: ShipEval, plan: Plan, r: number, s: number, win: Window): number {
@@ -661,6 +680,29 @@ class Search {
       if (v >= this.val[r] * (1 - TIDY)) this.val[r] = v;
       else hours[r] = h;
     }
+    // a shift that runs out of Mood a few minutes a day shows a warning for a tiny gain: move its
+    // boundary an hour at a time (keeping Shift A's end) while that costs at most TIDY of the score
+    const total = this.score;
+    for (let r = 0; r < NR; r++) {
+      const floor = this.val[r] - TIDY * total;
+      for (let step = 0; step < 3 && hours[r] >= 0; step++) {
+        const halts = this.pl.halts(this.se, this.plan, r);
+        if (!halts) break;
+        const h = hours[r];
+        const [start, len] = [startOf(h), lenOf(h)];
+        let best: [number, number, number] | null = null; // hours, halts, value
+        for (const [s, l] of [[start + 1, len - 1], [start - 1, len + 1]]) {
+          if (l < 1 || l > 23) continue;
+          hours[r] = hoursId(s, l);
+          const n = this.pl.halts(this.se, this.plan, r);
+          const v = this.v(r);
+          if (n < halts && v >= floor && (!best || n < best[1] || (n === best[1] && v > best[2]))) best = [hours[r], n, v];
+        }
+        hours[r] = best ? best[0] : h;
+        if (!best) break;
+        this.val[r] = best[2];
+      }
+    }
   }
 
   /** Try every start time for each room's Shift A, keeping its length. */
@@ -699,7 +741,7 @@ export function keepsHours(profile: Profile): boolean {
 /** Planner score of a profile: the sum of room priority x efficiency, with the results' numbers before rounding. */
 export function planScore(ops: OperatorsData, profile: Profile): number {
   const dp = profile.dijiangPlanner;
-  const prio = lookup(PRIORITY_OPTIONS, field(dp.settings, "prio", "Equal"), PRIORITY_OPTIONS.Equal);
+  const prio = roomWeights(profile);
   const rs = lookup(dp.roomSettings, "GC", {} as RoomSettings);
   const plots = (field(rs, "items", []) ?? []).filter((x) => truthy(x) && Object.hasOwn(ROOM_DATA.GC.items, x as string)) as string[];
   const types = plots.length ? plots.map((x) => ROOM_DATA.GC.items[x].type) : ["fungus", "plant", "mineral"];
@@ -711,7 +753,7 @@ export function planScore(ops: OperatorsData, profile: Profile): number {
     if (!eff) continue;
     const t = roomType(r);
     const v = t === "GC" ? types.reduce((n, x) => n + (eff[x] ?? 0), 0) / types.length : eff.efficiency ?? 0;
-    j += (prio[t] ?? 1) * v;
+    j += (prio[r] ?? 1) * v;
   }
   return j;
 }

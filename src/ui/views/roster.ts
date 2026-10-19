@@ -1,9 +1,10 @@
 // Roster tab: search, room/status filters, default skill levels and one card
 // per operator with per-skill level segments.
-import { OPS, baseRoom, getShiftSettings, skillLevel } from "../../core/index.ts";
-import { cmpStr, esc, img, tip } from "../html.ts";
-import { ROOM_FILTERS, S, STATUS_FILTERS, dp, opLists, slotLabel, whereIs } from "../state.ts";
-import { LEVEL_NAMES, attrs, levelSeg, opImg, opName, opTip, skillIcons } from "../widgets.ts";
+import { OPS, ROOM_DATA, baseRoom, getShiftSettings, skillLevel } from "../../core/index.ts";
+import type { RoomType } from "../../core/index.ts";
+import { esc, img, tip } from "../html.ts";
+import { ROOM_FILTERS, S, SORTS, STATUS_FILTERS, dp, opLists, slotLabel, whereIs } from "../state.ts";
+import { LEVEL_NAMES, attrs, fitKey, levelSeg, opImg, opName, opTip, rarityOf, skillIcons, skillValueLabel, sortOps, stars } from "../widgets.ts";
 
 const SKILL_HELP: Record<string, string> = {
   "mood drain": "Slows Mood Drop for everyone working in the room, so they work longer before resting.",
@@ -27,7 +28,7 @@ function skillLine(opId: string, i: number): string {
   const lvTip = LEVEL_NAMES[lv] + (custom ? " · set for this operator" : " · follows the default");
   return `<div class="sl${custom ? " custom" : ""}${lv === 0 ? " off" : ""}">`
     + `<div class="sl-info" ${tip(t)}>${skillIcons(sk)}<div class="sl-text"><b>${esc(sk.name)}</b>`
-    + `<span>${esc(sk.room)} · ${esc(sk.type)}</span></div></div>`
+    + `<span><em>${esc(skillValueLabel(sk, lv))}</em> · ${esc(sk.room)} · ${esc(sk.type)}</span></div></div>`
     + `${levelSeg(lv, "set-level", { op: opId, i }, lvTip)}</div>`;
 }
 
@@ -47,8 +48,8 @@ function opCard(opId: string, kind: Kind): string {
   else if (kind !== "fixed") toggle = `<button class="mini" ${tip("Disable: keep this operator out of every room")} data-act="disable-op" ${data}>DISABLE</button>`;
   const skills = OPS[opId].baseSkills.map((_, i) => skillLine(opId, i)).join("");
   return `<div class="oc oc-${kind}">`
-    + `<div class="oc-top"><div class="oc-portrait" ${tip(opTip(opId))}>${opImg(opId, "oc-img")}${tag}</div>`
-    + `<div class="oc-main"><div class="oc-name">${esc(opName(opId))}</div>${skills}</div></div>`
+    + `<div class="oc-top"><div class="oc-portrait r${rarityOf(opId)}" ${tip(opTip(opId))}>${opImg(opId, "oc-img")}${tag}</div>`
+    + `<div class="oc-main"><div class="oc-name"><span>${esc(opName(opId))}</span>${stars(opId)}</div>${skills}</div></div>`
     + `<div class="oc-actions"><button class="mini" ${tip("Reset both skills to the default levels")} data-act="reset-levels" `
     + `${data} ${custom ? "" : "disabled"}>↺ RESET</button>${toggle}</div></div>`;
 }
@@ -75,8 +76,10 @@ export function rosterCardList(): [string, string][] {
     return true;
   };
   const rank = (o: string): number => (kind(o) === "disabled" ? 1 : 0);
-  const order = Object.keys(OPS).sort((a, b) => rank(a) - rank(b) || cmpStr(opName(a), opName(b)));
-  return order.filter(keep).map((o) => [o, opCard(o, kind(o))]);
+  // with a room filter the best fits for that room come first (16% before 12%); disabled operators last
+  const fit = froom !== "ALL" ? (o: string) => fitKey(o, froom as RoomType, null) : undefined;
+  const order = sortOps(Object.keys(OPS).filter(keep), S.sortBy, fit).sort((a, b) => rank(a) - rank(b));
+  return order.map((o) => [o, opCard(o, kind(o))]);
 }
 
 /** The cards as one string (the DOM keeps and patches them one by one, see render.ts). */
@@ -102,13 +105,16 @@ export function rosterDefaults(): string {
 
 export function rosterMeta(): string {
   const { available, fixed, disabled } = opLists();
-  return `<div class="roster-meta">${available.length + fixed.length} usable · ${disabled.length} disabled · hover a portrait or skill for details</div>`;
+  const by = S.sortBy === "name" ? "name" : "rarity";
+  const order = S.filterRoom !== "ALL" ? `best ${ROOM_DATA[S.filterRoom as RoomType].name} skills first, then ${by}` : `by ${by}`;
+  return `<div class="roster-meta">${available.length + fixed.length} usable · ${disabled.length} disabled · sorted ${order} · hover a portrait or skill for details</div>`;
 }
 
 /** `cards: false` leaves the grid empty for the DOM renderer to fill. */
 export function rosterView(cards = true): string {
   const roomChips = ROOM_FILTERS.map(([v, l]) => chip("room", v, (v !== "ALL" ? img("base_icons", v, "chip-icon") : "") + l, S.filterRoom)).join("");
   const statChips = STATUS_FILTERS.map(([v, l]) => chip("status", v, l, S.filterStatus)).join("");
+  const sortChips = SORTS.map(([v, l]) => chip("sort", v, esc(l), S.sortBy)).join("");
   return `
     <div class="view roster">
       <div class="toolbar">
@@ -116,7 +122,7 @@ export function rosterView(cards = true): string {
           <label class="search"><span>⌕</span><input id="op-search" value="${esc(S.search)}" data-input="search" placeholder="Search operators" aria-label="Search operators"></label>
           ${rosterDefaults()}
         </div>
-        <div class="tb-row chips">${roomChips}<span class="chip-sep"></span>${statChips}</div>
+        <div class="tb-row chips">${roomChips}<span class="chip-sep"></span>${statChips}<span class="chip-sep"></span><span class="chip-label">SORT</span>${sortChips}</div>
       </div>
       ${rosterMeta()}
       <div class="oc-grid" id="oc-grid">${cards ? rosterCards() : ""}</div>

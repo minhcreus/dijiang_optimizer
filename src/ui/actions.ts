@@ -1,7 +1,7 @@
 // Event handlers: every change goes through commit(), which keeps the slots in
 // sync with the shifts, autosaves and re-renders.
 import {
-  OPS, ROOM_IDS, defaultProfile, fmt3, getShiftSettings, keepsHours, planShip, resetShift, setDefaultLevel, setSkillLevel, shiftSlot,
+  OPS, PRIO_MAX, ROOM_IDS, defaultProfile, fmt3, getShiftSettings, keepsHours, planShip, priorityLevels, priorityOn, resetShift, setDefaultLevel, setSkillLevel, shiftSlot,
   shiftWindows, swapShift, syncSlots, windowLength,
 } from "../core/index.ts";
 import type { PlanResult, Profile, RoomSettings, ShiftSettings } from "../core/index.ts";
@@ -80,7 +80,8 @@ function assign(slot: string, i: number, opId: string | null): void {
 export function optimizeNote(res: PlanResult, keep: boolean, changed: boolean): string {
   if (!changed) return "Optimize found no better plan than the one you have.";
   const gain = res.before > 0 ? (res.score / res.before - 1) * 100 : null;
-  let out = gain === null ? "Optimized: new plan." : `Optimized: ${fmt3(gain)}% more output than before (rooms weighted by Room priority).`;
+  const weighted = priorityOn(res.profile) ? " (rooms weighted by your room priority)" : "";
+  let out = gain === null ? "Optimized: new plan." : `Optimized: ${fmt3(gain)}% more output than before${weighted}.`;
   if (keep) return `${out} Your shift hours were kept.`;
   const p: Profile = res.profile;
   const lens: number[] = [];
@@ -254,10 +255,21 @@ export function onClick(evt: MouseEvent): void {
       return;
     case "filter":
       if (d.group === "room") S.filterRoom = d.val ?? "ALL";
+      else if (d.group === "sort") S.sortBy = d.val === "name" ? "name" : "rarity";
       else S.filterStatus = d.val ?? "all";
-      S.store.saveUi({ filterRoom: S.filterRoom, filterStatus: S.filterStatus });
+      S.store.saveUi({ filterRoom: S.filterRoom, filterStatus: S.filterStatus, sortBy: S.sortBy });
       renderRosterFilters();
       return;
+    case "prio-step": {
+      // first use on an older profile: start from the levels of its Room priority preset
+      const lv = priorityLevels(p);
+      const cur = lv[room] ?? 1;
+      const next = Math.min(PRIO_MAX, Math.max(1, cur + (d.d === "-1" ? -1 : 1)));
+      if (next === cur) return;
+      dp().settings.roomPrio = { ...lv, [room]: next };
+      dp().settings.prioOn = true;
+      break;
+    }
     case "reset-levels":
       delete dp().operatorSkills[d.op ?? ""];
       return commit(renderRoster);
@@ -367,8 +379,9 @@ export function onChange(evt: Event): void {
   const s = dp().settings;
   const checked = el instanceof HTMLInputElement && el.checked;
   switch (kind) {
-    case "prio":
-      s.prio = el.value;
+    case "prio-on":
+      s.roomPrio = priorityLevels(S.profile);
+      s.prioOn = checked;
       break;
     case "align":
       s.align = el.value;

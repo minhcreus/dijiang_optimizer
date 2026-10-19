@@ -1,0 +1,4 @@
+# LF everywhere, so the hashes build.mjs writes into sw.js match the files GitHub Pages serves
+* text=auto eol=lf
+*.webp binary
+*.png binary

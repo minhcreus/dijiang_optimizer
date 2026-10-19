@@ -659,6 +659,36 @@
       }
     ]
   },
+  "purrchena": {
+    "baseSkills": [
+      {
+        "name": "Brand Ambassador",
+        "room": "RR",
+        "texts": [
+          "Assign to Reception Room to grant operators a small Clue 2 Rate-UP: TGCC (activates upon assignment; effects of the same type cannot stack)",
+          "Assign to Reception Room to grant operators Clue 2 Rate-UP: TGCC (activates upon assignment; effects of the same type cannot stack)"
+        ],
+        "type": "clue rate up",
+        "values": [
+          2,
+          2
+        ]
+      },
+      {
+        "name": "Desserts for the Debrief",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to grant operator EXP material production efficiency +20%",
+          "Assign to Manufacturing Cabin to grant operator EXP material production efficiency +30%"
+        ],
+        "type": "operator xp",
+        "values": [
+          0.2,
+          0.3
+        ]
+      }
+    ]
+  },
   "rossi": {
     "baseSkills": [
       {
@@ -685,6 +715,36 @@
         "values": [
           0.2,
           0.3
+        ]
+      }
+    ]
+  },
+  "si": {
+    "baseSkills": [
+      {
+        "name": "Ware is the Geist",
+        "room": "RR",
+        "texts": [
+          "Assign to Reception Room to grant operator clue collecting efficiency +20%",
+          "Assign to Reception Room to grant operator clue collecting efficiency +30%"
+        ],
+        "type": "clue efficiency",
+        "values": [
+          0.2,
+          0.3
+        ]
+      },
+      {
+        "name": "Ink Spirit Aide",
+        "room": "RR",
+        "texts": [
+          "Assign to Reception Room to slow Mood Drop of all operators in it by 14%",
+          "Assign to Reception Room to slow Mood Drop of all operators in it by 18%"
+        ],
+        "type": "mood drain",
+        "values": [
+          0.14,
+          0.18
         ]
       }
     ]
@@ -742,6 +802,36 @@
           "Assign to Growth Chamber to grant vitrified plant growth rate +30%"
         ],
         "type": "plant",
+        "values": [
+          0.2,
+          0.3
+        ]
+      }
+    ]
+  },
+  "typhoeus": {
+    "baseSkills": [
+      {
+        "name": "Lithic Murmurs",
+        "room": "GC",
+        "texts": [
+          "Assign to Growth Chamber to grant rare mineral growth rate +20%",
+          "Assign to Growth Chamber to grant rare mineral growth rate +30%"
+        ],
+        "type": "mineral",
+        "values": [
+          0.2,
+          0.3
+        ]
+      },
+      {
+        "name": "Life in the Spores",
+        "room": "GC",
+        "texts": [
+          "Assign to Growth Chamber to grant fungal matter growth rate +20%",
+          "Assign to Growth Chamber to grant fungal matter growth rate +30%"
+        ],
+        "type": "fungus",
         "values": [
           0.2,
           0.3

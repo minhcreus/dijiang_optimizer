@@ -3,7 +3,7 @@
 // values as-is, so before it runs: wrong containers are treated as missing,
 // and unknown operators or products (e.g. from a newer version of the original
 // site), wrong types and lengths are repaired. Valid profiles come back unchanged.
-import { DAY_MIN, OPS, ROOM_DATA, migrateProfile, roomType, syncSlots } from "../core/index.ts";
+import { DAY_MIN, OPS, ROOM_DATA, migrateProfile, priorityLevels, roomType, syncSlots } from "../core/index.ts";
 import type { Assigned, Profile, RoomSettings, ShiftSettings, Slots } from "../core/index.ts";
 import { isDict, pyRound, truthy } from "../core/py.ts";
 
@@ -93,6 +93,11 @@ export function sanitizeProfile(profile: Profile): Profile {
   if (typeof s.align !== "string") s.align = "Staggered";
   if (Object.hasOwn(s, "cnModel") && s.cnModel !== "game" && s.cnModel !== "always") delete s.cnModel;
   if (Object.hasOwn(s, "shiftHours") && s.shiftHours !== "optimize" && s.shiftHours !== "keep") delete s.shiftHours;
+  if (Object.hasOwn(s, "prioOn") && typeof s.prioOn !== "boolean") delete s.prioOn;
+  if (Object.hasOwn(s, "roomPrio")) {
+    if (isDict(s.roomPrio)) s.roomPrio = priorityLevels(profile);
+    else delete s.roomPrio;
+  }
 
   const ops = dict<unknown>(profile.operators);
   profile.operators = {};

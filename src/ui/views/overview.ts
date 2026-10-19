@@ -2,13 +2,13 @@
 // panel, including the Cabin Shift screen and its 24h work-schedule bar.
 import {
   DAY_MIN, ROOM_DATA, ROOM_IDS, cnModel, fmt3, formatFixed, getShiftSettings, inWindow, minutesToClock, pct3,
-  productionMultiplier, roomType, shiftSlot, shiftWindows, windowLabel, windowLength,
+  priorityOn, productionMultiplier, roomType, roomWeights, shiftSlot, shiftWindows, windowLabel, windowLength,
 } from "../../core/index.ts";
 import type { RoomResult, RoomType, Results, ShiftId, ShiftInfo, ShiftSettings, Window } from "../../core/index.ts";
 import { esc, img, pad2, tip, title } from "../html.ts";
 import { S, dp, nowMin, results, shiftOn, utc } from "../state.ts";
 import type { Bar } from "../state.ts";
-import { itemButton, opImg, slotsRow } from "../widgets.ts";
+import { itemButton, opImg, prioStepper, prioSwitch, slotsRow } from "../widgets.ts";
 
 const ROOM_CODES: Record<RoomType, string> = { CN: "CTRL", MFG: "MFG", GC: "GROW", RR: "RECP" };
 const BLURBS: Record<RoomType, string> = {
@@ -338,10 +338,12 @@ function shipTile(roomId: string, res: RoomResult | undefined): string {
   const [val, label] = roomKeyStat(roomId, res);
   const alert = roomAlert(roomId, res);
   const name = ROOM_DATA[rtype].name;
+  const w = rtype !== "CN" && priorityOn(S.profile) ? roomWeights(S.profile)[roomId] ?? 1 : 0;
+  const prio = w ? `<span class="tile-prio p${w}">x${w}</span>` : "";
   return `<button class="tile tile-${rtype}${S.room === roomId ? " sel" : ""}" data-act="select-room" data-room="${esc(roomId)}" `
-    + `${tip(`${name} (${roomId})\nClick to open`)}>`
+    + `${tip(`${name} (${roomId})${w ? `\nPriority x${w}: counts ${w === 1 ? "once" : `${w} times`} when Optimize compares plans` : ""}\nClick to open`)}>`
     + `<div class="tile-head">${img("base_icons", rtype, "tile-icon")}<span class="tile-name">${name}</span>`
-    + `<span class="tile-code">${esc(roomId)}</span></div>`
+    + `${prio}<span class="tile-code">${esc(roomId)}</span></div>`
     + `<div class="tile-body"><div class="faces-wrap">${faces}</div><div class="tile-stat"><b>${esc(val)}</b><span>${esc(label)}</span></div></div>`
     + `${alert ? `<div class="tile-alert">! ${esc(alert)}</div>` : ""}</button>`;
 }
@@ -378,9 +380,12 @@ export function roomCard(roomId: string, res: RoomResult | undefined): string {
     body += `<button class="add-shift" data-act="add-shift" data-room="${esc(roomId)}" ${tip(addTip)}>+ Add Shift B</button>`;
   }
   body += resultsGrid(roomId, res);
+  // the Control Nexus has no priority: it only helps the other rooms
+  const prio = rtype === "CN" ? "" : `<div class="detail-prio">${prioSwitch("PRIORITY")}${prioStepper(roomId)}</div>`;
   return `<section class="detail room-${rtype}" id="room-${esc(roomId)}">`
     + `<div class="detail-head">${img("base_icons", rtype, "detail-icon")}`
-    + `<div><h2>${ROOM_DATA[rtype].name}</h2><p>${BLURBS[rtype]}</p></div><span class="room-code">${ROOM_CODES[rtype]} // ${esc(roomId)}</span></div>`
+    + `<div><h2>${ROOM_DATA[rtype].name}</h2><p>${BLURBS[rtype]}</p></div>`
+    + `<div class="head-side"><span class="room-code">${ROOM_CODES[rtype]} // ${esc(roomId)}</span>${prio}</div></div>`
     + `<div class="detail-body">${body}</div></section>`;
 }
 

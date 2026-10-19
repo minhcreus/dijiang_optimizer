@@ -36,6 +36,7 @@ export interface State {
   room: string;
   filterRoom: string;
   filterStatus: string;
+  sortBy: string;
 }
 
 export const TABS: readonly [Tab, string][] = [["overview", "OVERVIEW"], ["roster", "ROSTER"], ["settings", "SETTINGS"]];
@@ -45,6 +46,7 @@ export const ROOM_FILTERS: readonly [string, string][] = [
 export const STATUS_FILTERS: readonly [string, string][] = [
   ["all", "Any status"], ["free", "Free"], ["assigned", "Assigned"], ["disabled", "Disabled"],
 ];
+export const SORTS: readonly [string, string][] = [["rarity", "★ Rarity"], ["name", "A-Z Name"]];
 
 export let S: State;
 
@@ -52,12 +54,13 @@ const oneOf = <T extends string>(v: string, options: readonly (readonly [T, stri
   options.find(([k]) => k === v)?.[0] ?? fallback;
 
 /** Stored UI prefs, falling back to the defaults for values this version does not know. */
-export function uiFromPrefs(ui: UiPrefs, roomIds: readonly string[]): Pick<State, "tab" | "room" | "filterRoom" | "filterStatus"> {
+export function uiFromPrefs(ui: UiPrefs, roomIds: readonly string[]): Pick<State, "tab" | "room" | "filterRoom" | "filterStatus" | "sortBy"> {
   return {
     tab: oneOf(ui.tab, TABS, "overview"),
     room: roomIds.includes(ui.room) ? ui.room : "MFG-I",
     filterRoom: oneOf(ui.filterRoom, ROOM_FILTERS, "ALL"),
     filterStatus: oneOf(ui.filterStatus, STATUS_FILTERS, "all"),
+    sortBy: oneOf(ui.sortBy, SORTS, "rarity"),
   };
 }
 

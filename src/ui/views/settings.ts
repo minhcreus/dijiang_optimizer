@@ -1,10 +1,11 @@
 // Settings tab: optimizer and schedule options, the profiles manager and the
 // formula notes.
-import { ALIGNMENT_OPTIONS, PRIORITY_OPTIONS, cnModel, keepsHours } from "../../core/index.ts";
+import { ALIGNMENT_OPTIONS, PRIO_ROOMS, ROOM_DATA, cnModel, keepsHours, roomType } from "../../core/index.ts";
 import type { ProfileMeta } from "../../storage.ts";
-import { esc, tip } from "../html.ts";
+import { esc, img, tip } from "../html.ts";
 import { S, dp } from "../state.ts";
 import { relTime } from "../time.ts";
+import { prioStepper, prioSwitch } from "../widgets.ts";
 
 const options = (keys: readonly string[], cur: string): string =>
   keys.map((k) => `<option value="${esc(k)}"${k === cur ? " selected" : ""}>${esc(k)}</option>`).join("");
@@ -65,14 +66,24 @@ function profilesCard(): string {
       </div>`;
 }
 
+/** Production rooms in deck order (Reception Room first), each with its priority buttons. */
+function prioRows(): string {
+  const order = ["RR", ...PRIO_ROOMS.filter((r) => r !== "RR")];
+  return order.map((rid) => {
+    const t = roomType(rid);
+    return `<div class="prio-row">${img("base_icons", t, "bi")}<span>${esc(ROOM_DATA[t].name)} <i>${esc(rid)}</i></span>${prioStepper(rid)}</div>`;
+  }).join("");
+}
+
 export function settingsView(): string {
   const s = dp().settings;
   return `
     <div class="view settings">
       <div class="card">
         <h3>OPTIMIZER</h3>
-        <label class="field"><span>Room priority</span><select data-change="prio">${options(Object.keys(PRIORITY_OPTIONS), s.prio ?? "Equal")}</select>
-          <small>How much each room counts when Optimize compares plans: the top room x3, then x2 and x1 (Equal: x1 each), so the top rooms get the strongest operators.</small></label>
+        <div class="field"><span>Room priority</span>${prioSwitch("USE ROOM PRIORITY")}
+          <div class="prio-rows">${prioRows()}</div>
+          <small>Press + to make a room count more when Optimize compares plans (x1 to x5), so it gets the strongest operators. Off: every room counts x1. The same buttons are on each room's panel.</small></div>
         <label class="field"><span>Shift hours</span><select data-change="shift-hours">${SHIFT_HOURS.map(([k, label]) => `<option value="${k}"${(k === "keep") === keepsHours(S.profile) ? " selected" : ""}>${label}</option>`).join("")}</select>
           <small>Optimize picks them: it also sets each room's Shift A/B hours and how many Control Nexus operators to use. Keep mine: it only picks operators for the shifts you set.</small></label>
         <label class="field"><span>Operator alignment</span><select data-change="align">${options(ALIGNMENT_OPTIONS, s.align ?? "Staggered")}</select>
@@ -95,7 +106,7 @@ export function settingsView(): string {
           <li><b>Production speed</b> = (1 + 40% per working operator) x (1 + matching skill bonuses).</li>
           <li><b>Mood drop per hour</b> = 7.2% x (1 - Mood Drop reductions).</li>
           <li>Operators at zero Mood rest until max Mood, then return to work. Shift results simulate this minute by minute and average the days once the pattern repeats.</li>
-          <li><b>Optimize</b> scores a plan as the sum of the rooms' efficiency weighted by Room priority (the Growth Chamber counts the average over its plots), from the same numbers shown here. It tries Control Nexus line-ups (empty, 1-3 operators, or two shifts) and, for each, fills the rooms one operator at a time where that adds the most, then moves and swaps operators and tries every Shift A length, with or without Shift B, until nothing improves. Fixed operators stay where they are.</li>
+          <li><b>Optimize</b> scores a plan as the sum of the rooms' efficiency, each times its room priority when that is on (the Growth Chamber counts the average over its plots), from the same numbers shown here. It tries Control Nexus line-ups (empty, 1-3 operators, or two shifts) and, for each, fills the rooms one operator at a time where that adds the most, then moves and swaps operators and tries every Shift A length, with or without Shift B, until nothing improves. Fixed operators stay where they are.</li>
           <li>Values are rounded to 3 decimals and trailing zeros are dropped.</li>
         </ul>
       </div>

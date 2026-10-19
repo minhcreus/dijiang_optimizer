@@ -4,7 +4,7 @@
 import type { Profile } from "./core/types.ts";
 
 export interface ProfileMeta { id: string; name: string; updatedAt: number; createdAt: number }
-export interface UiPrefs { tab: string; room: string; filterRoom: string; filterStatus: string }
+export interface UiPrefs { tab: string; room: string; filterRoom: string; filterStatus: string; sortBy: string }
 /** `at`: last successful write in this session (null before the first one). */
 export type SaveStatus = { state: "saved" | "pending" | "unavailable" | "error"; at: number | null; message?: string };
 export type StoreEvent = { type: "status" | "external" };
@@ -66,7 +66,7 @@ interface Incoming { name?: unknown; data: unknown; active?: boolean }
 
 export const STORE_KEY = "dijiang-optimizer/v2";
 export const LEGACY_KEYS = ["dijiang-planner-profile"];
-export const UI_DEFAULTS: UiPrefs = { tab: "overview", room: "MFG-I", filterRoom: "ALL", filterStatus: "all" };
+export const UI_DEFAULTS: UiPrefs = { tab: "overview", room: "MFG-I", filterRoom: "ALL", filterStatus: "all", sortBy: "rarity" };
 const VERSION = 2;
 const NAME_MAX = 40;
 const IMPORT_MAX = 2_000_000;
@@ -103,7 +103,7 @@ function cleanUi(raw: unknown, base: UiPrefs = UI_DEFAULTS): UiPrefs {
     const v = src[k];
     return typeof v === "string" && v.length > 0 && v.length <= NAME_MAX ? v : base[k];
   };
-  return { tab: pick("tab"), room: pick("room"), filterRoom: pick("filterRoom"), filterStatus: pick("filterStatus") };
+  return { tab: pick("tab"), room: pick("room"), filterRoom: pick("filterRoom"), filterStatus: pick("filterStatus"), sortBy: pick("sortBy") };
 }
 
 function slug(name: string): string {

@@ -1,19 +1,23 @@
 // The picker modal: operators for a slot, or a product / plot item.
-import { OPS, ROOM_DATA, SKILL_ICON_TYPE, roomType, secondsToHms } from "../../core/index.ts";
-import { cmpStr, esc, img, tip } from "../html.ts";
+import { OPS, ROOM_DATA, SKILL_ICON_TYPE, baseRoom, roomType, secondsToHms, skillLevel } from "../../core/index.ts";
+import { esc, img, tip } from "../html.ts";
 import { S, dp, opLists, slotLabel, whereIs } from "../state.ts";
 import type { Picker } from "../state.ts";
-import { opImg, opName, opTip } from "../widgets.ts";
+import { fitKey, opImg, opName, opTip, rarityOf, skillValueLabel, sortOps, stars } from "../widgets.ts";
 
 function opEntries(slot: string, q: string): string {
   const rtype = roomType(slot);
-  const hasSkill = (o: string): boolean => OPS[o].baseSkills.some((sk) => sk.room === rtype);
-  const ordered = [...opLists().available].sort((a, b) => Number(!hasSkill(a)) - Number(!hasSkill(b)) || cmpStr(opName(a), opName(b)));
+  const room = baseRoom(slot);
+  // the best fits for this room first: higher bonus for its product or plots, then Mood Drop, then stars
+  const ordered = sortOps(opLists().available, "rarity", (o) => fitKey(o, rtype, room));
   return ordered.filter((o) => !q || opName(o).toLowerCase().includes(q)).map((o) => {
-    const types = OPS[o].baseSkills.filter((sk) => sk.room === rtype).map((sk) => SKILL_ICON_TYPE[sk.type] ?? sk.type);
-    const fits = types.length ? img("base_icons", rtype, "bi") + types.map((t) => img("base_icons", `${rtype}-${t}`, "bi")).join("") : "";
-    return `<button class="pick${fits ? " fits" : ""}" data-act="pick" data-val="${esc(o)}" ${tip(opTip(o))}>`
-      + `${opImg(o)}<span>${esc(opName(o))}</span>`
+    const skills = OPS[o].baseSkills.map((sk, i) => [sk, skillLevel(S.profile, o, i)] as const).filter(([sk]) => sk.room === rtype);
+    const fits = skills.length
+      ? img("base_icons", rtype, "bi") + skills.map(([sk, lv]) => img("base_icons", `${rtype}-${SKILL_ICON_TYPE[sk.type] ?? sk.type}`, "bi")
+        + `<b class="pick-val${lv ? "" : " off"}">${esc(skillValueLabel(sk, lv))}</b>`).join("")
+      : "";
+    return `<button class="pick${fits ? " fits" : ""} r${rarityOf(o)}" data-act="pick" data-val="${esc(o)}" ${tip(opTip(o))}>`
+      + `${opImg(o)}<span>${esc(opName(o))}</span>${stars(o)}`
       + `<span class="pick-fit">${fits}</span>${whereIs(o) ? '<span class="pick-loc">IN USE</span>' : ""}</button>`;
   }).join("");
 }
@@ -46,7 +50,7 @@ export function pickerView(): string {
     const cur = dp().roomAssignments[pk.slot]?.[pk.i] ?? null;
     heading = `${slotLabel(pk.slot)} · slot ${pk.i + 1}`;
     clear = cur ? '<button data-act="pick" data-val="">Clear slot</button>' : "";
-    hint = '<div class="muted small pad-x">Operators with a skill for this room come first and are highlighted.</div>';
+    hint = '<div class="muted small pad-x">Operators with a skill for this room are highlighted, the highest bonus for its product first (at the skill levels you set), then by stars.</div>';
   } else {
     heading = pk.kind === "mfg" ? "Select Product" : `Growth Chamber · Plot ${pk.i + 1}`;
     clear = '<button data-act="pick" data-val="">Clear</button>';

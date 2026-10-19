@@ -28,7 +28,7 @@ const isOp = (op: Assigned | null | undefined): op is Assigned => truthy(op);
 const countOps = (slots: Slots): number => slots.reduce((n, op) => (isOp(op) ? n + 1 : n), 0);
 
 export function mergeOperatorData(
-  operators: Readonly<Record<string, { name: string }>>,
+  operators: Readonly<Record<string, { name: string; rarity?: number; art?: string; artFallback?: string }>>,
   baseSkills: Readonly<Record<string, { baseSkills: Skill[] }>>,
 ): OperatorsData {
   const out: OperatorsData = {};
