@@ -7,6 +7,7 @@ Base planner for Arknights: Endfield.
 
 ## Changelog
 
+- **Oct 22:** Optimizing operators' avatar
 - **Oct 19:** Update up to 1.6 phase 1
 - **Oct 17:** Optimize plans shifts and Control Nexus, rarity sort, room priority, Si, Typhoeus, Purrchena
 - **Oct 16:** TypeScript rewrite, saved profiles, offline, Control Nexus shifts
