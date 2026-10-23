@@ -1,8 +1,8 @@
 // Event handlers: every change goes through commit(), which keeps the slots in
 // sync with the shifts, autosaves and re-renders.
 import {
-  OPS, PRIO_MAX, ROOM_IDS, defaultProfile, fmt3, getShiftSettings, keepsHours, planShip, priorityLevels, priorityOn, resetShift, setDefaultLevel, setSkillLevel, shiftSlot,
-  shiftWindows, swapShift, syncSlots, windowLength,
+  OPS, PRIO_MAX, ROOM_DATA, ROOM_IDS, defaultProfile, fmt3, getShiftSettings, keepsHours, planShip, priorityLevels, priorityOn, resetShift, roomOn, roomType,
+  setDefaultLevel, setSkillLevel, shiftSlot, shiftWindows, swapShift, syncSlots, windowLength,
 } from "../core/index.ts";
 import type { PlanResult, Profile, RoomSettings, ShiftSettings } from "../core/index.ts";
 import { download, nameFromFile } from "./files.ts";
@@ -94,7 +94,9 @@ export function optimizeNote(res: PlanResult, keep: boolean, changed: boolean): 
   const ra = p.dijiangPlanner.roomAssignments;
   const cn = [...(ra.CN ?? []), ...(ra[shiftSlot("CN", "B")] ?? [])].filter(Boolean).length;
   const cnShift = getShiftSettings(p, "CN").enabled;
-  out += cn ? ` Control Nexus: ${cn} operator${cn > 1 ? "s" : ""}${cnShift ? " in 2 shifts" : ""}.` : " Control Nexus left empty: those operators give more in the rooms.";
+  if (roomOn(p, "CN")) out += cn ? ` Control Nexus: ${cn} operator${cn > 1 ? "s" : ""}${cnShift ? " in 2 shifts" : ""}.` : " Control Nexus left empty: those operators give more in the rooms.";
+  const off = ROOM_IDS.filter((rid) => !roomOn(p, rid)).map((rid) => `${ROOM_DATA[roomType(rid)].name} (${rid})`);
+  if (off.length) out += ` Switched off: ${off.join(", ")}.`;
   return out;
 }
 
@@ -395,6 +397,15 @@ export function onChange(evt: Event): void {
     case "shift-hours":
       s.shiftHours = el.value === "keep" ? "keep" : "optimize";
       break;
+    case "room-on": {
+      const room = el.dataset.room ?? "";
+      if (checked) delete dp().roomSettings[room]?.off;
+      else {
+        setRoomSetting(room, "off", true);
+        delete S.drafts[room];
+      }
+      break;
+    }
     case "auto-rotate": {
       const room = el.dataset.room ?? "";
       setShift(room, { ...getShiftSettings(S.profile, room), autoRotate: checked });

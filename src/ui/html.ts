@@ -60,15 +60,18 @@ export function img(kind: string, name: string, cls: string, alt = ""): string {
 }
 
 /**
- * Art that may fall back to another host (operators the asset repo does not have yet). Not in
- * CORS mode, since that host may not send CORS headers, and without a referrer, which hotlink
- * checks allow; the service worker leaves the other host to the browser cache. Fails over to
- * `fallback` once, like img().
+ * Art that may fall back to other hosts (the operator pictures). Not in CORS mode, since those
+ * hosts may not send CORS headers, and without a referrer, which hotlink checks allow; the
+ * service worker leaves other hosts to the browser cache. Fails over to each of `fallbacks` in
+ * turn (data-fallback holds the ones left, space-separated), then hides like img().
  */
-export function remoteImg(src: string, fallback: string | undefined, cls: string, alt = ""): string {
+export function remoteImg(src: string, fallbacks: readonly string[], cls: string, alt = ""): string {
   const [w, h] = IMG_SIZE[cls] ?? [24, 24];
-  const cur = fallback && failedArt.has(src) ? fallback : src;
-  const fb = fallback && cur === src ? ` data-fallback="${esc(fallback)}"` : "";
+  const chain = [src, ...fallbacks];
+  const at = Math.max(0, chain.findIndex((u) => !failedArt.has(u)));
+  const cur = failedArt.has(chain[at]) ? chain[chain.length - 1] : chain[at];
+  const rest = chain.slice(chain.indexOf(cur) + 1);
+  const fb = rest.length ? ` data-fallback="${esc(rest.join(" "))}"` : "";
   const hidden = failedArt.has(cur) ? ' style="visibility:hidden"' : "";
   return `<img class="${cls}" src="${esc(cur)}"${fb}${hidden} alt="${esc(alt)}" width="${w}" height="${h}" loading="lazy" decoding="async" referrerpolicy="no-referrer">`;
 }

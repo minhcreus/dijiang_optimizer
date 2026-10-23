@@ -120,6 +120,9 @@ footer { text-align: center; padding: 2rem 16px 2.5rem; color: var(--muted); fon
 .tile-stat { text-align: right; display: flex; flex-direction: column; }
 .tile-stat b { font: 600 16px/1.1 var(--font-mono); }
 .tile-stat span { font-size: 11px; color: var(--muted); }
+.tile.off { opacity: .55; }
+.tile-off { font: 700 13px var(--font-mono); letter-spacing: .15em; color: var(--muted); border: 1px dashed var(--line); padding: .15rem .5rem; }
+.room-off-note { background: var(--bg-2); border-left: 3px solid var(--line); padding: .7rem .8rem; color: var(--muted); font-size: 14px; }
 .tile-alert { background: rgba(229,73,44,.18); color: #ff8b78; font-size: 11px; padding: .1rem .55rem; border-top: 1px solid rgba(229,73,44,.4); }
 
 .detail { --rc: var(--mfg); background: var(--panel); border: 1px solid var(--line); min-width: 0; }

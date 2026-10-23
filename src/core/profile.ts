@@ -110,12 +110,17 @@ export function assignmentSlots(profile: Profile): string[] {
   return slots;
 }
 
-/** Make roomAssignments match enabled shifts (create / remove "#B" slots). */
+/** Is the room in use? A room switched off holds no operators and Optimize leaves it empty. */
+export function roomOn(profile: Profile, roomId: string): boolean {
+  return !truthy(field(lookup(profile.dijiangPlanner.roomSettings, roomId, {} as RoomSettings), "off", false));
+}
+
+/** Make roomAssignments match enabled shifts (create / remove "#B" slots); rooms that are off are emptied. */
 export function syncSlots(profile: Profile): Profile {
   const p = structuredClone(profile);
   const ra = p.dijiangPlanner.roomAssignments;
   const out: DijiangPlanner["roomAssignments"] = {};
-  for (const slot of assignmentSlots(p)) out[slot] = lookup(ra, slot, [null, null, null]);
+  for (const slot of assignmentSlots(p)) out[slot] = roomOn(p, slot.split("#")[0]) ? lookup(ra, slot, [null, null, null]) : [null, null, null];
   p.dijiangPlanner.roomAssignments = out;
   return p;
 }

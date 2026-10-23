@@ -2,7 +2,7 @@
 // App files are precached per build and served cache-first, so a page always gets
 // files from one build; a deploy changes VERSION, and the new worker takes over for
 // the next visit. Remote art: cache-first, refreshed in the background after a week.
-const VERSION = "15cbeb7ff6";
+const VERSION = "c28dd58486";
 const APP_CACHE = `dijiang-app-${VERSION}`;
 // v1 held opaque (no-cors) responses, which a CORS image request cannot use
 const ART_CACHE = "dijiang-art-v2";
@@ -10,8 +10,8 @@ const ART_CACHE = "dijiang-art-v2";
 const APP_FILES = {
   "./": "27b506a44f636333fa4585f3efa5bae31c39197bd970ac00b47ecfbf4dd6cf37",
   "./index.html": "27b506a44f636333fa4585f3efa5bae31c39197bd970ac00b47ecfbf4dd6cf37",
-  "./style.css": "462a5261ad22d212d5389720a3808fb2b94025c468d0dd6f7e594e1ec6f2c4b4",
-  "./dist/app.js": "ac9910b63385bd630d8e38dd328c6ff13899c6487191ca61085d0d53bb73c4ae"
+  "./style.css": "bb7a6a6baa502c50c1129d709832203f3d8a7f3e0e98a5854ae143134ffa033f",
+  "./dist/app.js": "94712c18800e16e2738922a044262a2604c198af882995377fb9a2fad2a25e3d"
 };
 const ART_MAX_AGE = 7 * 24 * 3600 * 1000;
 const STAMP = "x-sw-cached-at";

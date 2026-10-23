@@ -63,7 +63,7 @@ function cleanRoomSettings(roomId: string, v: unknown): RoomSettings | undefined
     if (sh) rs.shift = sh;
     else delete rs.shift;
   }
-  toBool(rs, "firstPrio");
+  toBool(rs, "firstPrio", "off");
   return rs;
 }
 

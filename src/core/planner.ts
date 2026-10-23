@@ -19,7 +19,7 @@
 import { BREAK_TIME, DAY_MIN, OPERATOR_BONUS, ROOM_DATA, ROOM_IDS, WORK_TIME, roomType, shiftSlot } from "./constants.ts";
 import { roomEfficiency, shiftWorked, shipState, skillValue, teamBreak } from "./calc.ts";
 import type { ShipState } from "./calc.ts";
-import { getShiftSettings, roomWeights, syncSlots } from "./profile.ts";
+import { getShiftSettings, roomOn, roomWeights, syncSlots } from "./profile.ts";
 import { field, lookup, truthy } from "./py.ts";
 import { shiftWindows, windowLength } from "./shifts.ts";
 import type { Assigned, OperatorsData, Profile, RoomSettings, ShiftSettings, Slots, Window } from "./types.ts";
@@ -112,6 +112,8 @@ interface Prep {
   regen: Float64Array;
   cnDrain: Float64Array;
   weight: number[];
+  /** [g]: room g is switched off (production rooms, then the Control Nexus) */
+  off: boolean[];
   /** operators the planner places */
   pool: number[];
   /** fixed operator per position, -1 where none */
@@ -138,7 +140,9 @@ function prepare(ops: OperatorsData, profile: Profile, available: readonly strin
   };
   const fixed = new Int16Array(NPOS).fill(-1);
   const fixedEntry: (Assigned | null)[] = new Array(NPOS).fill(null);
+  const off = [...PROD, "CN"].map((rid) => !roomOn(profile, rid));
   for (let g = 0; g <= NR; g++) {
+    if (off[g]) continue;
     for (let s = 0; s < 2; s++) {
       const slots = lookup(dp.roomAssignments, shiftSlot(roomId(g), s ? "B" : "A"), [] as Slots);
       for (let i = 0; i < 3; i++) {
@@ -194,7 +198,7 @@ function prepare(ops: OperatorsData, profile: Profile, available: readonly strin
     return { kind: truthy(sh.autoRotate) ? "auto" : "hand", a: w.A, b: w.B, active: sh.active === "B" ? 1 : 0 };
   });
   return {
-    ops, profile, keep, ids, beta, drain, regen, cnDrain, weight: PROD.map((r) => prio[r] ?? 1), pool, fixed, fixedEntry,
+    ops, profile, keep, ids, beta, drain, regen, cnDrain, weight: PROD.map((r, g) => (off[g] ? 0 : prio[r] ?? 1)), off, pool, fixed, fixedEntry,
     runs, cnShift: truthy(getShiftSettings(profile, "CN").enabled),
   };
 }
@@ -320,6 +324,7 @@ class Planner {
 
   /** Can shift s of room g hold operators? */
   usable(plan: Plan, g: number, s: number): boolean {
+    if (this.P.off[g]) return false;
     if (s === 0) return true;
     if (g === CN) return this.P.keep ? this.P.cnShift : plan.hours[CN] >= 0;
     return this.P.keep ? this.P.runs[g].kind !== "none" : plan.hours[g] >= 0;
@@ -599,6 +604,7 @@ class Search {
     let any = false;
     const { hours } = this.plan;
     for (let r = 0; r < NR; r++) {
+      if (this.pl.P.off[r]) continue;
       const cur = hours[r];
       const end = cur < 0 ? 0 : endOf(cur);
       let best = cur;
@@ -626,7 +632,7 @@ class Search {
     let best: { r: number; h: number; o: number; from: number; gain: number; v: number; vf: number } | null = null;
     const movable = [...this.bench(), ...this.positions().filter((p) => pos[p] >= 0).map((p) => pos[p])];
     for (let r = 0; r < NR; r++) {
-      if (hours[r] >= 0) continue;
+      if (hours[r] >= 0 || this.pl.P.off[r]) continue;
       const p = at3(r, 1);
       for (let len = 1; len < 24; len++) {
         hours[r] = hoursId(24 - len, len);
@@ -748,7 +754,7 @@ export function planScore(ops: OperatorsData, profile: Profile): number {
   const st = shipState(ops, profile);
   let j = 0;
   for (const r of PROD) {
-    if (!Object.hasOwn(dp.roomAssignments, r)) continue;
+    if (!Object.hasOwn(dp.roomAssignments, r) || !roomOn(profile, r)) continue;
     const [eff] = roomEfficiency(ops, profile, r, st);
     if (!eff) continue;
     const t = roomType(r);
@@ -765,7 +771,7 @@ function planOf(pl: Planner, profile: Profile, index: Map<string, number>): Plan
   const dp = profile.dijiangPlanner;
   for (let g = 0; g <= NR; g++) {
     const sh = getShiftSettings(profile, roomId(g));
-    if (!P.keep && truthy(sh.enabled)) plan.hours[g] = hoursOfBar(sh) ?? (g === CN ? CN_HOURS : hoursId(24 - LONG_A, LONG_A));
+    if (!P.keep && truthy(sh.enabled) && !P.off[g]) plan.hours[g] = hoursOfBar(sh) ?? (g === CN ? CN_HOURS : hoursId(24 - LONG_A, LONG_A));
     for (let s = 0; s < 2; s++) {
       if (!pl.usable(plan, g, s)) continue;
       const slots = lookup(dp.roomAssignments, shiftSlot(roomId(g), s ? "B" : "A"), [] as Slots);
@@ -796,8 +802,8 @@ function lineups(pl: Planner): Plan[] {
   const free = (s: number): number[] => [0, 1, 2].map((i) => at3(CN, s) + i).filter((p) => P.fixed[p] < 0);
   const fixedIn = (s: number): number => 3 - free(s).length;
   const out: Plan[] = [];
-  const shiftOk = P.keep ? P.cnShift : true;
-  for (let kA = fixedIn(0); kA <= 3; kA++) {
+  const shiftOk = !P.off[CN] && (P.keep ? P.cnShift : true);
+  for (let kA = fixedIn(0); kA <= (P.off[CN] ? fixedIn(0) : 3); kA++) {
     for (let kB = shiftOk ? fixedIn(1) : 0; kB <= (shiftOk ? 3 : 0); kB++) {
       if (!P.keep && kA === 0 && kB > 0) continue;
       const add = kA - fixedIn(0) + Math.max(0, kB - fixedIn(1));
@@ -822,7 +828,7 @@ function production(pl: Planner, cn: Plan, extra: Plan[] = []): Search {
       const x = clonePlan(cn);
       for (let r = 0; r < NR; r++) {
         const fixedB = [0, 1, 2].some((i) => pl.P.fixed[at3(r, 1) + i] >= 0);
-        x.hours[r] = len || fixedB ? hoursId(24 - (len || LONG_A), len || LONG_A) : -1;
+        x.hours[r] = pl.P.off[r] ? -1 : len || fixedB ? hoursId(24 - (len || LONG_A), len || LONG_A) : -1;
       }
       starts.push(x);
     }
@@ -968,7 +974,7 @@ export function planShip(ops: OperatorsData, profile: Profile, available: readon
       if (t.score >= best.score * (1 - TIDY)) best = t;
     }
   }
-  if (P.keep && P.cnShift && !truthy(getShiftSettings(profile, "CN").autoRotate)) fillReserveCn(pl, best);
+  if (P.keep && P.cnShift && !P.off[CN] && !truthy(getShiftSettings(profile, "CN").autoRotate)) fillReserveCn(pl, best);
   const out = toProfile(pl, best.plan);
   return { profile: out, score: planScore(ops, out), before: planScore(ops, profile) };
 }

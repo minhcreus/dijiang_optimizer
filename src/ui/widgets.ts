@@ -1,7 +1,7 @@
 // Small HTML pieces shared by the views.
-import { OPS, PRIO_MAX, ROOM_DATA, SKILL_ICON_TYPE, fmt3, priorityLevels, priorityOn, roomType, secondsToHms, skillLevel } from "../core/index.ts";
+import { OPS, PRIO_MAX, ROOM_DATA, SKILL_ICON_TYPE, fmt3, priorityLevels, priorityOn, roomOn, roomType, secondsToHms, skillLevel } from "../core/index.ts";
 import type { RoomType, Skill } from "../core/index.ts";
-import { cmpStr, esc, img, remoteImg, tip } from "./html.ts";
+import { asset, cmpStr, esc, img, remoteImg, tip } from "./html.ts";
 import { S, dp, slotLabel, whereIs } from "./state.ts";
 
 export const LEVEL_NAMES = ["Off", "Lv 1", "Lv 2"];
@@ -10,8 +10,9 @@ export const opName = (opId: string): string => OPS[opId]?.name ?? opId;
 
 export function opImg(opId: string, cls = "op-img"): string {
   const op = OPS[opId];
-  // the site's own copy (scripts/fetch-art.mjs), else the art link
-  if (op?.art) return remoteImg(`assets/operators/${encodeURIComponent(opId)}.webp`, op.art, cls, opName(opId));
+  // the site's own copy of the warfarin.wiki picture (scripts/fetch-art.mjs), else the picture
+  // itself, else the asset repo's older art
+  if (op?.art) return remoteImg(`assets/portraits/${encodeURIComponent(opId)}.webp`, [op.art, asset("operators", opId)], cls, opName(opId));
   return img("operators", opId, cls, opName(opId));
 }
 
@@ -170,4 +171,13 @@ export function prioStepper(roomId: string): string {
 export function prioSwitch(label = "ROOM PRIORITY"): string {
   const t = "On: rooms with a higher priority count more when Optimize compares plans, so they get the strongest operators. Off: every room counts the same.";
   return `<label class="check prio-switch" ${tip(t)}><input type="checkbox" data-change="prio-on" ${priorityOn(S.profile) ? "checked" : ""}><span>${label}</span></label>`;
+}
+
+/** A room's on/off switch: off, the room holds no operators and Optimize leaves it empty. */
+export function roomSwitch(roomId: string, label = "IN USE"): string {
+  const on = roomOn(S.profile, roomId);
+  const t = on
+    ? "Switch this room off: its operators are freed, and Optimize leaves it empty and uses them in the other rooms."
+    : "This room is off: it holds no operators and Optimize leaves it empty. Switch it on to use it again.";
+  return `<label class="check room-switch" ${tip(t)}><input type="checkbox" data-change="room-on" data-room="${esc(roomId)}" ${on ? "checked" : ""}><span>${label}</span></label>`;
 }

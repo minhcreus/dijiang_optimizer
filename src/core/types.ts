@@ -24,8 +24,8 @@ export interface OperatorData {
   baseSkills: Skill[];
   /** stars (4-6) */
   rarity?: number;
-  /** art for operators the asset repo does not have yet (from warfarin.wiki), and a second image
-   *  scripts/fetch-art.mjs tries; the site shows its copy in assets/operators first */
+  /** the operator's picture on warfarin.wiki, and a second image scripts/fetch-art.mjs tries;
+   *  the site shows its copy in assets/portraits first */
   art?: string;
   artFallback?: string;
 }
@@ -55,6 +55,8 @@ export interface RoomSettings {
   items?: (string | null)[];
   firstPrio?: boolean;
   shift?: Partial<ShiftSettings>;
+  /** room switched off: it holds no operators and Optimize leaves it empty */
+  off?: boolean;
 }
 
 export interface PlannerSettings {

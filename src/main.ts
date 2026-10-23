@@ -14,15 +14,16 @@ import { hideTip, onMouseOver } from "./ui/tooltip.ts";
 const store = createStore({ defaults: defaultProfile, normalize: normalizeProfile });
 initState(store, ROOM_IDS);
 
-/** Missing art: the remote original for a shipped copy, else hidden (no broken-image icon). */
+/** Missing art: the next fallback (space-separated in data-fallback), else hidden (no broken-image icon). */
 function onImageError(evt: Event): void {
   const el = evt.target;
   if (!(el instanceof HTMLImageElement)) return;
-  const { fallback } = el.dataset;
+  const [next, ...rest] = (el.dataset.fallback ?? "").split(" ").filter(Boolean);
   failedArt.add(el.getAttribute("src") ?? "");
-  if (fallback) {
-    delete el.dataset.fallback;
-    el.src = fallback;
+  if (next) {
+    if (rest.length) el.dataset.fallback = rest.join(" ");
+    else delete el.dataset.fallback;
+    el.src = next;
   } else {
     el.style.visibility = "hidden";
   }
