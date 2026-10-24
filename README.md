@@ -7,7 +7,7 @@ Base planner for Arknights: Endfield.
 
 ## Changelog
 
-- **Oct 24:** Pictures, icons and fonts change, room colors like in game
+- **Oct 24:** Pictures, icons and fonts change, room colors like in game, optimize shift bar
 - **Oct 23:** Adding option to complete turn off unwanted infrastructure, the site reloads itself after an update
 - **Oct 22:** Optimizing operators' avatar
 - **Oct 19:** Update up to 1.6 phase 1
