@@ -1,4 +1,13 @@
 /* Dijiang Optimizer: dark industrial console with hazard-yellow accents. */
+/* Fonts shipped with the site (Latin subset); text shows in a fallback font until they load. */
+@font-face { font-family: "Barlow"; font-weight: 400; font-style: normal; font-display: swap; src: url("assets/fonts/barlow-400.woff2") format("woff2"); }
+@font-face { font-family: "Barlow"; font-weight: 500; font-style: normal; font-display: swap; src: url("assets/fonts/barlow-500.woff2") format("woff2"); }
+@font-face { font-family: "Barlow"; font-weight: 600; font-style: normal; font-display: swap; src: url("assets/fonts/barlow-600.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 500; font-style: normal; font-display: swap; src: url("assets/fonts/jetbrains-mono-500.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 600; font-style: normal; font-display: swap; src: url("assets/fonts/jetbrains-mono-600.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 700; font-style: normal; font-display: swap; src: url("assets/fonts/jetbrains-mono-700.woff2") format("woff2"); }
+@font-face { font-family: "Rajdhani"; font-weight: 600; font-style: normal; font-display: swap; src: url("assets/fonts/rajdhani-600.woff2") format("woff2"); }
+@font-face { font-family: "Rajdhani"; font-weight: 700; font-style: normal; font-display: swap; src: url("assets/fonts/rajdhani-700.woff2") format("woff2"); }
 :root {
   --bg: #0e0f11;
   --bg-2: #141518;

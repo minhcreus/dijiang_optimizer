@@ -2,3 +2,4 @@
 * text=auto eol=lf
 *.webp binary
 *.png binary
+*.woff2 binary

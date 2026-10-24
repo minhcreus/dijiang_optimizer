@@ -10,7 +10,7 @@ import { prioStepper, prioSwitch, roomSwitch } from "../widgets.ts";
 const options = (keys: readonly string[], cur: string): string =>
   keys.map((k) => `<option value="${esc(k)}"${k === cur ? " selected" : ""}>${esc(k)}</option>`).join("");
 
-const CN_MODELS: readonly [string, string][] = [["game", "Tires and rests (like the game)"], ["always", "Always on (original planner)"]];
+const CN_MODELS: readonly [string, string][] = [["game", "Tires and rests (like the game)"], ["always", "Always on (never rests)"]];
 const SHIFT_HOURS: readonly [string, string][] = [["optimize", "Optimize picks them"], ["keep", "Keep mine"]];
 
 function timezoneOptions(cur: number): string {
@@ -34,7 +34,7 @@ function profileRow(m: ProfileMeta, active: boolean, single: boolean): string {
       ${active ? '<span class="prof-tag">ACTIVE</span>' : ""}
       <div class="prof-actions">${renameBtns}
         <button class="mini" data-act="profile-duplicate" data-id="${id}" ${tip("Copy this profile into a new one and switch to it")}>DUPLICATE</button>
-        <button class="mini" data-act="profile-export" data-id="${id}" ${tip("Download this profile as a .json file (the original planner can import it too)")}>EXPORT</button>
+        <button class="mini" data-act="profile-export" data-id="${id}" ${tip("Download this profile as a .json file")}>EXPORT</button>
         <button class="mini danger" data-act="profile-delete" data-id="${id}" ${single ? "disabled" : ""} ${tip(single ? "The only profile cannot be deleted. Use Reset instead." : "Delete this profile from this browser")}>DELETE</button>
       </div></li>`;
 }
@@ -56,11 +56,11 @@ function profilesCard(): string {
         <ul class="profiles">${rows}</ul>
         <div class="io-actions">
           <button data-act="profile-new" ${tip("Start a new profile with default settings")}>+ New profile</button>
-          <label class="file-btn" ${tip("Import a profile from a .json file: an export from this planner or from the original planner")}>Import file<input type="file" id="import-file" accept=".json,application/json,text/plain" data-change="import-file"></label>
+          <label class="file-btn" ${tip("Import a profile from a .json file exported from this planner")}>Import file<input type="file" id="import-file" accept=".json,application/json,text/plain" data-change="import-file"></label>
           <button data-act="profile-export-all" ${tip("Download every profile in one .json file")}>Export all</button>
           <button data-act="reset-profile" class="danger" ${tip("Reset the active profile to the default settings")}>Reset this profile</button>
         </div>
-        <small class="muted">Profile data: copy the text to back it up, or paste a profile (also from the original planner) and import it as a new profile.</small>
+        <small class="muted">Profile data: copy the text to back it up, or paste a profile and import it as a new profile.</small>
         <textarea id="io-text" data-profile="${esc(S.profileId)}" spellcheck="false" aria-label="Profile JSON">${data}</textarea>
         <div class="io-actions"><button data-act="import">Import pasted profile</button>${msg}</div>
       </div>`;
@@ -101,7 +101,7 @@ export function settingsView(): string {
         <label class="field"><span>Operator alignment</span><select data-change="align">${options(ALIGNMENT_OPTIONS, s.align ?? "Staggered")}</select>
           <small>Staggered: operators start one at a time so someone is always working. Aligned: all start and rest together. Used for the Control Nexus and for rooms without auto-rotating shifts.</small></label>
         <label class="field"><span>Control Nexus Mood</span><select data-change="cn-model">${CN_MODELS.map(([k, label]) => `<option value="${k}"${k === cnModel(S.profile) ? " selected" : ""}>${label}</option>`).join("")}</select>
-          <small>Like the game: Control Nexus operators lose Mood and rest like everyone else, and their Mood Regen only counts while they work. A Shift B on the Control Nexus keeps it going. Always on: the original planner's shortcut, Mood Regen never stops.</small></label>
+          <small>Like the game: Control Nexus operators lose Mood and rest like everyone else, and their Mood Regen only counts while they work. A Shift B on the Control Nexus keeps it going. Always on: a shortcut where Mood Regen never stops.</small></label>
       </div>
       <div class="card">
         <h3>SCHEDULE</h3>

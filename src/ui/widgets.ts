@@ -1,7 +1,7 @@
 // Small HTML pieces shared by the views.
 import { OPS, PRIO_MAX, ROOM_DATA, SKILL_ICON_TYPE, fmt3, priorityLevels, priorityOn, roomOn, roomType, secondsToHms, skillLevel } from "../core/index.ts";
 import type { RoomType, Skill } from "../core/index.ts";
-import { asset, cmpStr, esc, img, remoteImg, tip } from "./html.ts";
+import { cmpStr, esc, img, tip } from "./html.ts";
 import { S, dp, slotLabel, whereIs } from "./state.ts";
 
 export const LEVEL_NAMES = ["Off", "Lv 1", "Lv 2"];
@@ -9,11 +9,7 @@ export const LEVEL_NAMES = ["Off", "Lv 1", "Lv 2"];
 export const opName = (opId: string): string => OPS[opId]?.name ?? opId;
 
 export function opImg(opId: string, cls = "op-img"): string {
-  const op = OPS[opId];
-  // the site's own copy of the warfarin.wiki picture (scripts/fetch-art.mjs), else the picture
-  // itself, else the asset repo's older art
-  if (op?.art) return remoteImg(`assets/portraits/${encodeURIComponent(opId)}.webp`, [op.art, asset("operators", opId)], cls, opName(opId));
-  return img("operators", opId, cls, opName(opId));
+  return img("portraits", opId, cls, opName(opId));
 }
 
 export const rarityOf = (opId: string): number => OPS[opId]?.rarity ?? 0;

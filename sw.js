@@ -1,20 +1,16 @@
 // Service worker: makes repeat visits instant and lets the planner work offline.
 // App files are precached per build and served cache-first, so a page always gets
-// files from one build; a deploy changes VERSION, and the new worker takes over for
-// the next visit. Remote art: cache-first, refreshed in the background after a week.
-const VERSION = "c28dd58486";
+// files from one build; a deploy changes VERSION, and the page reloads when the new
+// worker takes over (main.ts). Images in assets/ are cached on first use.
+const VERSION = "53f0dd93cf";
 const APP_CACHE = `dijiang-app-${VERSION}`;
-// v1 held opaque (no-cors) responses, which a CORS image request cannot use
-const ART_CACHE = "dijiang-art-v2";
 /** Precached files and the SHA-256 of the content this build expects (build.mjs). */
 const APP_FILES = {
-  "./": "27b506a44f636333fa4585f3efa5bae31c39197bd970ac00b47ecfbf4dd6cf37",
-  "./index.html": "27b506a44f636333fa4585f3efa5bae31c39197bd970ac00b47ecfbf4dd6cf37",
-  "./style.css": "bb7a6a6baa502c50c1129d709832203f3d8a7f3e0e98a5854ae143134ffa033f",
-  "./dist/app.js": "94712c18800e16e2738922a044262a2604c198af882995377fb9a2fad2a25e3d"
+  "./": "32e00ba5a6b401868017ebdd1e3730e45b95496c2b134852c0fa32681b9e1e3e",
+  "./index.html": "32e00ba5a6b401868017ebdd1e3730e45b95496c2b134852c0fa32681b9e1e3e",
+  "./style.css": "0f47d6e85b71aad138c5dad1ce2a300b0561242b96ab7cadfd9b15ae0792c3fd",
+  "./dist/app.js": "e5657f86009630f4896a117f4858c56edb7933b191e3170edcf7425747303664"
 };
-const ART_MAX_AGE = 7 * 24 * 3600 * 1000;
-const STAMP = "x-sw-cached-at";
 
 const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
 
@@ -43,7 +39,8 @@ self.addEventListener("install", (event) => {
 });
 
 self.addEventListener("activate", (event) => {
-  const stale = (k) => (k.startsWith("dijiang-app-") && k !== APP_CACHE) || (k.startsWith("dijiang-art-") && k !== ART_CACHE);
+  // caches left by older builds
+  const stale = (k) => (k.startsWith("dijiang-app-") && k !== APP_CACHE) || k.startsWith("dijiang-art-");
   event.waitUntil(
     caches.keys()
       .then((keys) => Promise.all(keys.filter(stale).map((k) => caches.delete(k))))
@@ -51,55 +48,35 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-/** Keep a copy of a good response (never an opaque one: Chrome counts each as megabytes of quota). */
-function store(event, cache, req, res, stamp) {
+/** Keep a copy of a good response. */
+function store(event, cache, req, res) {
   if (!res.ok || res.type === "opaque") return;
-  let copy = res.clone();
-  if (stamp) {
-    const headers = new Headers(copy.headers);
-    headers.set(STAMP, String(Date.now()));
-    copy = new Response(copy.body, { status: copy.status, statusText: copy.statusText, headers });
-  }
   // a full quota only means it is not cached
-  event.waitUntil(cache.put(req, copy).catch(() => undefined));
+  event.waitUntil(cache.put(req, res.clone()).catch(() => undefined));
 }
 
-const isArt = (url) => url.hostname === "raw.githubusercontent.com" && url.pathname.endsWith(".png");
-const isThumb = (url) => url.origin === self.location.origin && url.pathname.includes("/assets/");
+const isAsset = (url) => url.origin === self.location.origin && url.pathname.includes("/assets/");
 
-async function art(event) {
-  const req = event.request;
-  const cache = await caches.open(ART_CACHE);
-  const hit = await cache.match(req);
-  const refresh = () => fetch(req).then((res) => {
-    store(event, cache, req, res, true);
-    return res;
-  });
-  if (!hit) return refresh();
-  if (Date.now() - Number(hit.headers.get(STAMP) || 0) > ART_MAX_AGE) event.waitUntil(refresh().catch(() => undefined));
-  return hit;
-}
-
-/** This build's files from the precache; others (the shipped thumbnails) are cached into it on first use. */
+/** This build's files from the precache; others (the images in assets/) are cached into it on first use. */
 async function app(event) {
   const req = event.request;
   const cache = await caches.open(APP_CACHE);
   const hit = await cache.match(req, { ignoreSearch: true });
   if (hit) return hit;
   const res = await fetch(req);
-  if (isThumb(new URL(req.url))) store(event, cache, req, res, false);
+  if (isAsset(new URL(req.url))) store(event, cache, req, res);
   return res;
 }
 
-/** Art the page loaded before this worker controlled it (the first visit); usually still in the HTTP cache. */
+/** Images the page loaded before this worker controlled it (the first visit); usually still in the HTTP cache. */
 async function keepCopy(event, href) {
   const url = new URL(href, self.location.href);
-  if (!isArt(url) && !isThumb(url)) return;
-  const cache = await caches.open(isArt(url) ? ART_CACHE : APP_CACHE);
+  if (!isAsset(url)) return;
+  const cache = await caches.open(APP_CACHE);
   if (await cache.match(url.href)) return;
   const req = new Request(url.href);
   const res = await fetch(req).catch(() => null);
-  if (res) store(event, cache, req, res, isArt(url));
+  if (res) store(event, cache, req, res);
 }
 
 self.addEventListener("message", (event) => {
@@ -112,6 +89,5 @@ self.addEventListener("fetch", (event) => {
   const req = event.request;
   if (req.method !== "GET") return;
   const url = new URL(req.url);
-  if (isArt(url)) event.respondWith(art(event));
-  else if (url.origin === self.location.origin) event.respondWith(app(event));
+  if (url.origin === self.location.origin) event.respondWith(app(event));
 });

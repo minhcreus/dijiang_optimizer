@@ -1,4 +1,4 @@
-// Operator data bundled with the app (snapshot of eldritchtools/endfield-assets).
+// Operator data bundled with the app.
 import operators from "../data/operators.json" with { type: "json" };
 import baseSkills from "../data/base_skills.json" with { type: "json" };
 import { mergeOperatorData } from "./calc.ts";

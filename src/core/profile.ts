@@ -33,8 +33,7 @@ const isUnset = (levels: (number | null)[]): boolean =>
 
 /**
  * Change the default level of skill i and apply it to every operator.
- * The original planner kept per-operator overrides; here the default wins for
- * skill i and the other skill's overrides are kept.
+ * The default wins for skill i, and the other skill's per-operator overrides are kept.
  */
 export function setDefaultLevel(profile: Profile, i: number, level: number): Profile {
   const p = structuredClone(profile);
@@ -68,7 +67,7 @@ function setDefault(o: unknown, k: string, v: unknown): unknown {
 }
 
 /**
- * Accept a profile saved by this app or exported by the original site.
+ * Accept a profile saved or exported by this app.
  * Corrupt shapes raise like the Python version; the app repairs them first (ui/guard.ts).
  */
 export function migrateProfile(raw: unknown): Profile {

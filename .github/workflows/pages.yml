@@ -25,8 +25,6 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
-      # copies the operators' pictures (warfarin.wiki) into assets/portraits (skips committed files)
-      - run: node scripts/fetch-art.mjs
       - run: npm run build
       - name: Collect site files
         run: |

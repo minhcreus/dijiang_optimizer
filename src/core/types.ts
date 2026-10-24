@@ -1,9 +1,7 @@
 // Shared data shapes for the planner core, storage and UI.
-// They mirror the profile format of the original endfield-planners site so
-// exported profiles stay compatible in both directions.
 
 export type ShiftId = "A" | "B";
-/** How the Control Nexus Mood Regen works: "game" (its team tires and rests) or "always" (original planner). */
+/** How the Control Nexus Mood Regen works: "game" (its team tires and rests) or "always" (never rests). */
 export type CnModel = "game" | "always";
 /** Whether Optimize picks the Shift A/B hours ("optimize") or keeps the user's ("keep"). */
 export type ShiftHours = "optimize" | "keep";
@@ -24,10 +22,6 @@ export interface OperatorData {
   baseSkills: Skill[];
   /** stars (4-6) */
   rarity?: number;
-  /** the operator's picture on warfarin.wiki, and a second image scripts/fetch-art.mjs tries;
-   *  the site shows its copy in assets/portraits first */
-  art?: string;
-  artFallback?: string;
 }
 
 export type OperatorsData = Record<string, OperatorData>;

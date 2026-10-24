@@ -6,8 +6,7 @@
 // * Production efficiency = (1 + 0.4 * working operators) * (1 + sum(skill bonuses)):
 //   3 operators -> 220%, with 30 + 20 + 20% bonuses -> 374% (both as in game).
 // * Operators at zero mood rest until max mood and give no effects meanwhile
-//   (https://endfield.wiki.gg/wiki/OMV_Dijiang); shift rules from the in-game
-//   "Cabin Shift Rotation Details" help text.
+//   (as in game); shift rules from the in-game "Cabin Shift Rotation Details" help text.
 // Float operations keep the Python order so results are bit-identical.
 import { BREAK_TIME, DAY_MIN, OPERATOR_BONUS, ROOM_DATA, WORK_TIME, roomType, shiftSlot } from "./constants.ts";
 import { fmt3, pct3, secondsToHmin, secondsToHms } from "./format.ts";
@@ -28,7 +27,7 @@ const isOp = (op: Assigned | null | undefined): op is Assigned => truthy(op);
 const countOps = (slots: Slots): number => slots.reduce((n, op) => (isOp(op) ? n + 1 : n), 0);
 
 export function mergeOperatorData(
-  operators: Readonly<Record<string, { name: string; rarity?: number; art?: string; artFallback?: string }>>,
+  operators: Readonly<Record<string, { name: string; rarity?: number }>>,
   baseSkills: Readonly<Record<string, { baseSkills: Skill[] }>>,
 ): OperatorsData {
   const out: OperatorsData = {};
@@ -89,7 +88,7 @@ export function globalMoodRegen(ops: OperatorsData, profile: Profile): [number, 
   return [t.regen, t.drain];
 }
 
-/** "game": Control Nexus operators tire and rest, so their Mood Regen comes and goes. "always": the original planner's always-on Mood Regen. */
+/** "game": Control Nexus operators tire and rest, so their Mood Regen comes and goes. "always": Mood Regen that never stops. */
 export function cnModel(profile: Profile): CnModel {
   return lookup(profile.dijiangPlanner.settings as unknown as Record<string, unknown>, "cnModel", "game") === "always" ? "always" : "game";
 }
@@ -135,7 +134,7 @@ export function productionMultiplier(nOps: number, bonus: number): number {
   return (1 + nOps * OPERATOR_BONUS) * (1 + bonus);
 }
 
-/** Original planner model: one group of operators working through breaks forever. */
+/** "Always on" model: one group of operators working through breaks forever. */
 export function continuousEfficiency(
   slots: Slots, bonuses: Bonuses, workTime: number, breakTime: number, align: string,
 ): [Record<string, number>, number] {
@@ -285,7 +284,7 @@ function teamUnits(slots: Slots, regen: readonly number[], work: number, align: 
  * A team working through breaks under R(t): [average efficiency by type, operator uptime].
  * The simulation gives each operator's work-rest rhythm; a Staggered team is taken to keep
  * its even spacing (operators following the same R(t) would slowly drift into step over
- * months, which a player would undo), so its efficiency uses the original planner's
+ * months, which a player would undo), so its efficiency uses the "always on"
  * staggered timeline with the simulated average break.
  */
 function timelineTeam(slots: Slots, bonuses: Bonuses, work: number, align: string, ship: Ship): [Record<string, number>, number] {

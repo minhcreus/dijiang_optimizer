@@ -1,5 +1,5 @@
 // Operator optimizer: CN first (optional), then a min-cost max-flow over
-// operators x room slots, with the same scoring as the original planner.
+// operators x room slots.
 import { PRIORITY_OPTIONS, ROOM_DATA, baseRoom, roomType, shiftSlot } from "./constants.ts";
 import { skillValue } from "./calc.ts";
 import { getShiftSettings } from "./profile.ts";
@@ -226,7 +226,7 @@ export function optimizeOperators(ops: OperatorsData, profile: Profile, availabl
     for (let i = 0; i < 3; i++) {
       if (at(assignments[r], i)) continue;
       const a: Assigned = { id: o, fixed: false };
-      // nothing to give in this room (the original tested cost === 100, which misses Control Nexus operators)
+      // nothing to give in this room (cost === 100 alone would miss Control Nexus operators)
       if (score(o)[r] === 0) a.filler = true;
       assignments[r][i] = a;
       assigned.add(o);

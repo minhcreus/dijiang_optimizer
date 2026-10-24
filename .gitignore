@@ -3,5 +3,4 @@ _site/
 __pycache__/
 # the tools zip (tests, operator script): usable in this folder, never committed
 /tests/
-/crawl_warfarin.py
-/scripts/make_thumbs.py
+/*.py

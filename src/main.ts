@@ -14,19 +14,12 @@ import { hideTip, onMouseOver } from "./ui/tooltip.ts";
 const store = createStore({ defaults: defaultProfile, normalize: normalizeProfile });
 initState(store, ROOM_IDS);
 
-/** Missing art: the next fallback (space-separated in data-fallback), else hidden (no broken-image icon). */
+/** Missing art: hidden (no broken-image icon). */
 function onImageError(evt: Event): void {
   const el = evt.target;
   if (!(el instanceof HTMLImageElement)) return;
-  const [next, ...rest] = (el.dataset.fallback ?? "").split(" ").filter(Boolean);
   failedArt.add(el.getAttribute("src") ?? "");
-  if (next) {
-    if (rest.length) el.dataset.fallback = rest.join(" ");
-    else delete el.dataset.fallback;
-    el.src = next;
-  } else {
-    el.style.visibility = "hidden";
-  }
+  el.style.visibility = "hidden";
 }
 
 const on = <K extends keyof DocumentEventMap>(type: K, fn: (e: DocumentEventMap[K]) => void, opts?: AddEventListenerOptions): void =>
@@ -75,12 +68,23 @@ function cacheEarlyArt(sw: ServiceWorkerContainer): void {
   }, { once: true });
 }
 
+/**
+ * After a deploy this page still runs the old build from the worker's cache, and the new worker
+ * takes over a moment later: reload then, so an update shows on the first visit, not the next.
+ * (On a first visit there is no old worker, and this page already is the newest build.)
+ */
+function reloadOnUpdate(sw: ServiceWorkerContainer): void {
+  if (!sw.controller) return;
+  sw.addEventListener("controllerchange", () => location.reload(), { once: true });
+}
+
 function registerServiceWorker(): void {
   try {
     const { protocol, hostname } = location;
     const local = hostname === "localhost" || hostname === "127.0.0.1";
     if (!("serviceWorker" in navigator) || (protocol !== "https:" && !local)) return;
     cacheEarlyArt(navigator.serviceWorker);
+    reloadOnUpdate(navigator.serviceWorker);
     navigator.serviceWorker.register("sw.js").catch(() => undefined);
   } catch {
     // no service worker support here; the app works without it

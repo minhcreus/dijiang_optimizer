@@ -375,8 +375,8 @@ export function constantFrom(tl: Timeline, from = HORIZON.warmDays * DAY_S): num
 
 /**
  * Initial state of an operator that starts working `offset` seconds into a nominal
- * cycle of `work` seconds working and `rest` seconds resting (the original planner's
- * Staggered start: operator i starts i/3 of a cycle later).
+ * cycle of `work` seconds working and `rest` seconds resting (Staggered start:
+ * operator i starts i/3 of a cycle later).
  */
 export function staggeredStart(offset: number, work: number, rest: number): Pick<Unit, "mood" | "resting"> {
   if (offset <= 0) return { mood: 1, resting: false };

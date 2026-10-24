@@ -13,8 +13,7 @@ import { pickerEntries, pickerView } from "./views/picker.ts";
 import { NO_MATCH, rosterCardList, rosterDefaults, rosterMeta, rosterView } from "./views/roster.ts";
 import { settingsView } from "./views/settings.ts";
 
-const FOOTER = "<footer>Fan-made planner for the OMV Dijiang. Logic based on the Dijiang Planner in endfield-planners. "
-  + "Not affiliated with the game.</footer>";
+const FOOTER = "<footer>Fan-made planner for the OMV Dijiang. Not affiliated with the game.</footer>";
 /** Text fields whose focus and caret survive a re-render. */
 const FOCUS_IDS = new Set(["op-search", "picker-search", "rename-input", "io-text"]);
 

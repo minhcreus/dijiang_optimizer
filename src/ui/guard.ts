@@ -1,8 +1,8 @@
 // Turns any stored or imported profile into one the planner can use.
 // The core (like the Python version) raises on corrupt shapes and keeps unknown
 // values as-is, so before it runs: wrong containers are treated as missing,
-// and unknown operators or products (e.g. from a newer version of the original
-// site), wrong types and lengths are repaired. Valid profiles come back unchanged.
+// and unknown operators or products (e.g. from a newer version of the data),
+// wrong types and lengths are repaired. Valid profiles come back unchanged.
 import { DAY_MIN, OPS, ROOM_DATA, migrateProfile, priorityLevels, roomType, syncSlots } from "../core/index.ts";
 import type { Assigned, Profile, RoomSettings, ShiftSettings, Slots } from "../core/index.ts";
 import { isDict, pyRound, truthy } from "../core/py.ts";

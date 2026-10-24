@@ -50,7 +50,7 @@ export interface Store {
   exportProfile(id?: string): { filename: string; json: string };
   /** Every profile as a store dump (importProfile accepts it back). */
   exportAll(): { filename: string; json: string };
-  /** Accepts a bare profile (JSON or the original site's Base64 export), this app's export, or a store dump. Throws a friendly Error. */
+  /** Accepts a bare profile (JSON or Base64 of it), this app's export, or a store dump. Throws a friendly Error. */
   importProfile(text: string, name?: string): string;
   loadUi(): UiPrefs;
   saveUi(p: Partial<UiPrefs>): void;
@@ -75,7 +75,7 @@ const MSG = {
   quota: "Browser storage is full, so recent changes are not saved. Export your profiles and delete ones you no longer need.",
   empty: "Nothing to import: paste an exported profile or choose a .json file.",
   tooBig: "That file is too large to be a planner profile.",
-  badJson: "Could not read that profile: it is not valid JSON (or a Base64 export from the original planner).",
+  badJson: "Could not read that profile: it is not valid JSON (or Base64 of a profile).",
   notProfile: "That is not a Dijiang Optimizer profile: no \"dijiangPlanner\" section was found.",
   newer: "The saved data is from a newer version of the planner, so this tab does not save changes. Reload the page to update.",
 };
@@ -157,7 +157,7 @@ function parseStored(raw: string): Record<string, unknown> | null {
 const isNewer = (v: Record<string, unknown> | null): boolean => typeof v?.version === "number" && v.version > VERSION;
 const isStoreFile = (v: Record<string, unknown> | null): v is Record<string, unknown> => isObj(v?.profiles);
 
-/** The original site exports Base64 of UTF-8 JSON by default. */
+/** A profile can also come as Base64 of UTF-8 JSON. */
 function decodeBase64(s: string): string | null {
   if (typeof atob !== "function" || !/^[A-Za-z0-9+/=_\s-]+$/.test(s)) return null;
   try {
