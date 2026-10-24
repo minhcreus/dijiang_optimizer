@@ -77,8 +77,8 @@ function assign(slot: string, i: number, opId: string | null): void {
 }
 
 /** One line on what Optimize did: the gain, and in full mode the shifts and Control Nexus it chose. */
-export function optimizeNote(res: PlanResult, keep: boolean, changed: boolean): string {
-  if (!changed) return "Optimize found no better plan than the one you have.";
+export function optimizeNote(res: PlanResult, keep: boolean, changed: boolean, drafted = false): string {
+  if (!changed) return `Optimize found no better plan than the one you have.${drafted ? " Press Confirm to keep your new shift hours." : ""}`;
   const gain = res.before > 0 ? (res.score / res.before - 1) * 100 : null;
   const weighted = priorityOn(res.profile) ? " (rooms weighted by your room priority)" : "";
   let out = gain === null ? "Optimized: new plan." : `Optimized: ${fmt3(gain)}% more output than before${weighted}.`;
@@ -100,6 +100,14 @@ export function optimizeNote(res: PlanResult, keep: boolean, changed: boolean): 
   return out;
 }
 
+/** The profile as the page shows it, with bars moved but not confirmed yet, so Optimize starts from what you see. */
+export function withDrafts(profile: Profile): Profile {
+  if (!Object.keys(S.drafts).length) return profile;
+  const p = structuredClone(profile);
+  for (const room of Object.keys(S.drafts)) (p.dijiangPlanner.roomSettings[room] ??= {}).shift = draftOf(room);
+  return p;
+}
+
 /** Plan the whole ship. It can take a moment on a slow device, so the button shows it is working first. */
 function optimize(btn: HTMLElement): void {
   if (btn.hasAttribute("disabled")) return;
@@ -109,13 +117,14 @@ function optimize(btn: HTMLElement): void {
   window.setTimeout(() => {
     try {
       const keep = keepsHours(S.profile);
-      const res = planShip(OPS, S.profile, opLists().available, { keepHours: keep });
+      const drafted = Object.keys(S.drafts).length > 0;
+      const res = planShip(OPS, withDrafts(S.profile), opLists().available, { keepHours: keep });
       const changed = res.score > res.before + 1e-9;
       if (changed) {
-        S.profile = res.profile;
-        if (!keep) S.drafts = {};
+        S.profile = res.profile; // with "Keep mine" this holds the moved bars too
+        S.drafts = {};
       }
-      S.optNote = optimizeNote(res, keep, changed);
+      S.optNote = optimizeNote(res, keep, changed, drafted);
     } finally {
       btn.removeAttribute("disabled");
       btn.innerHTML = label;

@@ -2,14 +2,14 @@
 // App files are precached per build and served cache-first, so a page always gets
 // files from one build; a deploy changes VERSION, and the page reloads when the new
 // worker takes over (main.ts). Images in assets/ are cached on first use.
-const VERSION = "7be0e81ffd";
+const VERSION = "4482d3ec6f";
 const APP_CACHE = `dijiang-app-${VERSION}`;
 /** Precached files and the SHA-256 of the content this build expects (build.mjs). */
 const APP_FILES = {
   "./": "32e00ba5a6b401868017ebdd1e3730e45b95496c2b134852c0fa32681b9e1e3e",
   "./index.html": "32e00ba5a6b401868017ebdd1e3730e45b95496c2b134852c0fa32681b9e1e3e",
   "./style.css": "3dcda71b77621f190d5b3c0bbb4bec434dd0e61c073e9e0fad39ad1ebc120cd2",
-  "./dist/app.js": "e5657f86009630f4896a117f4858c56edb7933b191e3170edcf7425747303664"
+  "./dist/app.js": "bf696077b8abeab292a19ce481f24af4f780fada5173b9c4c07002569f864f8a"
 };
 
 const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
