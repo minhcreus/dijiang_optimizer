@@ -179,6 +179,36 @@
       }
     ]
   },
+  "argent-flow": {
+    "baseSkills": [
+      {
+        "name": "Axiom of Combat",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to grant operator EXP material production efficiency +20%",
+          "Assign to Manufacturing Cabin to grant operator EXP material production efficiency +30%"
+        ],
+        "type": "operator xp",
+        "values": [
+          0.2,
+          0.3
+        ]
+      },
+      {
+        "name": "Tools of Momentum",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to slow Mood Drop of all operators in it by 14%",
+          "Assign to Manufacturing Cabin to slow Mood Drop of all operators in it by 18%"
+        ],
+        "type": "mood drain",
+        "values": [
+          0.14,
+          0.18
+        ]
+      }
+    ]
+  },
   "avywenna": {
     "baseSkills": [
       {
@@ -445,6 +475,36 @@
         "values": [
           0.2,
           0.3
+        ]
+      }
+    ]
+  },
+  "kay": {
+    "baseSkills": [
+      {
+        "name": "Truly Wild Smithing",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to grant weapon EXP material production efficiency +20%",
+          "Assign to Manufacturing Cabin to grant weapon EXP material production efficiency +30%"
+        ],
+        "type": "weapon xp",
+        "values": [
+          0.2,
+          0.3
+        ]
+      },
+      {
+        "name": "Honey Waffle Break",
+        "room": "MFG",
+        "texts": [
+          "Assign to Manufacturing Cabin to slow Mood Drop of all operators in it by 14%",
+          "Assign to Manufacturing Cabin to slow Mood Drop of all operators in it by 18%"
+        ],
+        "type": "mood drain",
+        "values": [
+          0.14,
+          0.18
         ]
       }
     ]

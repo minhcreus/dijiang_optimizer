@@ -23,6 +23,10 @@
     "name": "Ardelia",
     "rarity": 6
   },
+  "argent-flow": {
+    "name": "Argent Flow",
+    "rarity": 6
+  },
   "avywenna": {
     "name": "Avywenna",
     "rarity": 5
@@ -61,6 +65,10 @@
   },
   "gilberta": {
     "name": "Gilberta",
+    "rarity": 6
+  },
+  "kay": {
+    "name": "Kay",
     "rarity": 6
   },
   "laevatain": {
